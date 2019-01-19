@@ -455,6 +455,7 @@ package body FirstApplication is
 --                                          RowNo    => 1,
 --                                          ColNo    => 2 );
 --              Put_Line(" Connect_Button_To_Function /\ ");
+--
 
             aTable.Attach( Child         => theCells(row,col).Alignment,
                            Left_Attach   => Glib.Guint(col-1),
