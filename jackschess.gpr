@@ -45,7 +45,8 @@ project Jackschess is
                                "src/MessingAround/AdaCore/GtkAdaTutorials",
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
-                               "src/MessingAround/TestingCallbacks" );
+                               "src/MessingAround/TestingCallbacks",
+                               "src/Prototype" );
 
       when "static-pic" =>
          for Source_Dirs use ( "src",
@@ -54,7 +55,8 @@ project Jackschess is
                                "src/MessingAround/AdaCore/GtkAdaTutorials",
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
-                               "src/MessingAround/TestingCallbacks" );
+                               "src/MessingAround/TestingCallbacks",
+                               "src/Prototype" );
 
       when "relocatable" =>
          for Source_Dirs use ( "src",
@@ -63,7 +65,8 @@ project Jackschess is
                                "src/MessingAround/AdaCore/GtkAdaTutorials",
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
-                               "src/MessingAround/TestingCallbacks" );
+                               "src/MessingAround/TestingCallbacks",
+                               "src/Prototype" );
    end case;
 
 end Jackschess;
