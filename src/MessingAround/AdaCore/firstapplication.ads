@@ -29,7 +29,9 @@ package FirstApplication is
    
    procedure Application;
    
-   function Create_Window return Gtk.Window.Gtk_Window;
+   function Create_Window( OutterMain_Window : in out Gtk.Window.Gtk_Window;
+                           theOutterCells: in out T_Cell_Tab_Access )
+                             return Gtk.Window.Gtk_Window;
    
    function Create_Window_v1( Main_Window: in out Gtk.Window.Gtk_Window; ButtonNo1: in Gtk.Button.Gtk_Button; LabelNo1, LabelTime: in Gtk.Label.Gtk_Label )
                              return Gtk.Window.Gtk_Window;
@@ -93,7 +95,6 @@ package FirstApplication is
    procedure Connect_Button_To_Function( theCells : in out T_Cell_Tab_Access;
                                          RowNo : in Integer := 1;
                                          ColNo : in Integer := 1 );
-   
    
    -- Widget_Type => Gtk.Button.Gtk_Button_Record
    type Type_Of_Widget_For_UsrCb is access Gtk.Widget.Gtk_Widget_Record'Class;

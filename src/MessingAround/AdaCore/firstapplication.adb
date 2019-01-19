@@ -88,6 +88,7 @@ package body FirstApplication is
    procedure Application is
       task_DO_QM : Delayed_DestroyWindow_And_MainQuit;
       Main_Window : Gtk.Window.Gtk_Window;
+      theCells : T_Cell_Tab_Access;
    begin
       --  Set the locale specific datas (e.g time and date format)
       --  Gtk.Main.SetLocale;
@@ -96,11 +97,24 @@ package body FirstApplication is
       Gtk.Main.Init;
 
       --  Create the main window
-      Main_Window := Create_Window;
+      Main_Window := Create_Window( OutterMain_Window =>Main_Window, theOutterCells => theCells );
       Put_Line("#2 Are you waiting for me?");
 
       task_DO_QM.Set_Object( Main_Window );
       task_DO_QM.Close_After( delay_value => 5.0 );
+
+      -- TUTAJ SIE PSUJE <=========================
+      --        if( row = 1 and col = 2 ) then
+      -- BUTTON TO FUNCTION CONNECTION
+      --        --                 Set_Function_On_Cell_Click( theCells => theCells,
+      --        --                                             RowNo    => 1,
+      --        --                                             ColNo    => 2 );
+--        Put_Line(" Connect_Button_To_Function \/ ");
+--        Connect_Button_To_Function( theCells => theCells,
+--                                    RowNo    => 1,
+--                                    ColNo    => 2 );
+--        Put_Line(" Connect_Button_To_Function /\ ");
+--        --        end if;
 
       --  Signal handling loop
       Gtk.Main.Main;
@@ -123,7 +137,9 @@ package body FirstApplication is
       inner_Window.Destroy;
    end Delayed_DestroyWindow_And_MainQuit;
 
-   function Create_Window return Gtk.Window.Gtk_Window is
+   function Create_Window( OutterMain_Window : in out Gtk.Window.Gtk_Window;
+                           theOutterCells: in out T_Cell_Tab_Access )
+                          return Gtk.Window.Gtk_Window is
       Main_Window : Gtk.Window.Gtk_Window;
       ButtonNo1 : Gtk.Button.Gtk_Button;
       LabelNo1 : Gtk.Label.Gtk_Label;
@@ -198,8 +214,14 @@ package body FirstApplication is
 
       --  Construct the window and connect various callbacks
       Main_Window.On_Destroy( DestroyObject_And_MainQuit'Access );
+      Put_Line( " Main_Window.On_Destroy( DestroyObject_And_MainQuit'Access ); " );
 
       Gtk.Window.Show_All (Main_Window);
+      Put_Line( " Gtk.Window.Show_All (Main_Window); " );
+
+      OutterMain_Window := Main_Window;
+      theOutterCells := theCells;
+
       Put_Line("#1 Are you waiting for me?");
       Put_Line("Create_Window - end");
       return Main_Window;
@@ -446,16 +468,7 @@ package body FirstApplication is
                                               RowNo    => row,
                                               ColNo    => col );
 
-            -- BUTTON TO FUNCTION CONNECTION
-            --        --                 Set_Function_On_Cell_Click( theCells => theCells,
-            --        --                                             RowNo    => 1,
-            --        --                                             ColNo    => 2 );
---              Put_Line(" Connect_Button_To_Function \/ ");
---              Connect_Button_To_Function( theCells => theCells,
---                                          RowNo    => 1,
---                                          ColNo    => 2 );
---              Put_Line(" Connect_Button_To_Function /\ ");
---
+
 
             aTable.Attach( Child         => theCells(row,col).Alignment,
                            Left_Attach   => Glib.Guint(col-1),
@@ -532,16 +545,20 @@ package body FirstApplication is
             aTmpButtonString : String := ( RowNo'Img & ", " & ColNo'Img & " = True" );
          begin
             Gtk.Button.Gtk_New( aTmpTCellRecord.Button, aTmpButtonString );
+            theCells( RowNo, ColNo ).all := aTmpTCellRecord;
             aTmpTCellRecord.Alignment.Add( Widget => aTmpTCellRecord.Button );
          end;
+         Put_Line("theCells(" & RowNo'Img & "," & ColNo'Img & " ).all.Button.Is_Created = " & theCells(RowNo, ColNo).all.Button.Is_Created'Img );
       else
          declare
             aTmpTCellRecord : T_Cell_Record := theCells( RowNo, ColNo ).all;
             aTmpButtonString : String := ( RowNo'Img & ", " & ColNo'Img & " = False");
          begin
             Gtk.Button.Gtk_New( aTmpTCellRecord.Button, aTmpButtonString );
+            theCells( RowNo, ColNo ).all := aTmpTCellRecord;
             aTmpTCellRecord.Alignment.Add( Widget => aTmpTCellRecord.Button );
          end;
+         Put_Line("theCells(" & RowNo'Img & "," & ColNo'Img & " ).all.Button.Is_Created = " & theCells(RowNo, ColNo).all.Button.Is_Created'Img );
          --T_Cell_Record
          --
          --              Gtk_New(Cell.Button);
@@ -602,10 +619,41 @@ package body FirstApplication is
    procedure Connect_Button_To_Function( theCells : in out T_Cell_Tab_Access;
                                          RowNo : in Integer := 1;
                                          ColNo : in Integer := 1 ) is
-      aButton : Gtk.Button.Gtk_Button := theCells( RowNo, ColNo ).all.Button;
+      aButton : Gtk.Button.Gtk_Button;
    begin
+      Put_Line("Inner - Connect_Button_To_Function \/");
+      Put_Line( "theCells = null \/ " );
+      if( theCells = null ) then
+         Put_Line( "theCells = null /\ " );
+      else
+         Put_Line( "theCells( RowNo, ColNo ) = null \/" );
+         if( theCells( RowNo, ColNo ) = null ) then
+            Put_Line( "theCells( RowNo, ColNo ) = null /\" );
+         else
+            Put_Line( "theCells( RowNo, ColNo ).all.Mined ... \/" );
+            declare
+               aCellRecord : T_Cell_Record := theCells( RowNo, ColNo ).all;
+            begin
+               Put_Line( "theCells( RowNo, ColNo ).all.Mined =" & aCellRecord.Mined'Img );
+            end;
+            Put_Line( "theCells( RowNo, ColNo ).all.Mined ... /\" );
+            Put_Line( "theCells( RowNo, ColNo ).all.Button.Is_Created = false \/" );
+            if( theCells( RowNo, ColNo ).all.Button.Is_Created = false ) then
+               Put_Line( "theCells( RowNo, ColNo ).all.Button.Is_Created = false /\ " );
+            else
+               Put_Line( "everything's good" );
+            end if;
+
+         end if;
+      end if;
+      Put_Line( "aButton := ... \/ " );
+      aButton := theCells( RowNo, ColNo ).all.Button;
+      Put_Line( "aButton := ... /\ " );
+      Put_Line("User_Callback.Connect  \/ ");
       User_Callback.Connect ( aButton, "Clicked", User_Callback.To_Marshaller (My_Callback'Access),
-                User_Data => "any string" );
+                              User_Data => "any string" );
+      Put_Line("User_Callback.Connect  /\ ");
+      Put_Line("Inner - Connect_Button_To_Function /\");
    end Connect_Button_To_Function;
 
    -- /** Testing **/ ===================================
