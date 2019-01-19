@@ -1360,26 +1360,26 @@ package body ada_main is
    end;
 
 --  BEGIN Object file/option list
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\button_clicked.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\exit_main.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\buttondemo.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\firstapplication.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest1.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest2.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest_animation_cairo_canvas.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest_animation.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest_clock.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\main_windows.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatutorials.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\gtkadatest_adacore.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\p_cell.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\p_main_window.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\minesweeper.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\windowdemo.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\anothertutorial.o
-   --   C:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\main.o
-   --   -LC:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\
-   --   -LC:\Users\JackEel\Documents\PWiR\AdaWorkspace\JackSChess\obj\
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\button_clicked.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\exit_main.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\buttondemo.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\firstapplication.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest1.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest2.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest_animation_cairo_canvas.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest_animation.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest_clock.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\main_windows.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatutorials.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\gtkadatest_adacore.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\p_cell.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\p_main_window.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\minesweeper.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\windowdemo.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\anothertutorial.o
+   --   C:\Users\JackEel\Documents\GitHub\JacksChess\obj\main.o
+   --   -LC:\Users\JackEel\Documents\GitHub\JacksChess\obj\
+   --   -LC:\Users\JackEel\Documents\GitHub\JacksChess\obj\
    --   -LC:\GtkAda\lib\gtkada\gtkada.static\gtkada\
    --   -LC:/gnat/2018/lib/gcc/x86_64-pc-mingw32/7.3.1/adalib/
    --   -static
