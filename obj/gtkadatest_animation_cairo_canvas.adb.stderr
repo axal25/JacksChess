@@ -1,0 +1,1 @@
+gtkadatest_animation_cairo_canvas.adb:117:07: warning: variable "Context" is read but never assigned

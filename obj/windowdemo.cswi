@@ -1,0 +1,11 @@
+20190112182650
+-c
+-x
+ada
+-gnatA
+-g
+-g
+-gnato
+-gnatE
+-fstack-check
+-gnatf

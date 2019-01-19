@@ -1,0 +1,45 @@
+with "gtkada";
+
+limited with "gtkada.gpr";
+
+project Jackschess is
+
+   type Build_Kind is
+      ("static", "static-pic", "relocatable");
+   for Source_Dirs use ("src", "src/MessingAround", "src/MessingAround/AdaCore",
+                        "src/MessingAround/AdaCore/GtkAdaTutorials",
+                        "src/MessingAround/AnotherTutorial",
+                        "src/MessingAround/Minesweeper");
+   for Object_Dir use "obj";
+   for Main use ("main.adb");
+   Library_Type : Build_Kind := external ("LIBRARY_TYPE");
+
+   package Check is
+      for Default_Switches ("ada") use ("-d", "-a");
+   end Check;
+
+   package Builder is
+      for Switches ("ada") use ("-g", "-C", "-k", "-s", "-m");
+   end Builder;
+
+   package Compiler is
+      for Switches ("ada") use ("-g", "-gnato", "-gnatE", "-fstack-check", "-gnatf");
+   end Compiler;
+
+   package Linker is
+
+      case Library_Type is
+
+         when "static" =>
+            for Switches ("ada") use ("-g", "-s", "-Wl,--subsystem,windows");
+
+         when "static-pic" =>
+            for Switches ("ada") use ("-g", "-s");
+
+         when "relocatable" =>
+            for Switches ("ada") use ("-g", "-s");
+      end case;
+   end Linker;
+
+end Jackschess;
+
