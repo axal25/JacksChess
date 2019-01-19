@@ -1,5 +1,0 @@
-gtkadatest_clock.adb:69:10: warning: variable "X" is never read and never assigned
-gtkadatest_clock.adb:70:10: warning: variable "Y" is never read and never assigned
-gtkadatest_clock.adb:73:10: warning: variable "Depth" is never read and never assigned
-gtkadatest_clock.adb:97:43: warning: "Width" may be referenced before it has a value
-gtkadatest_clock.adb:106:13: warning: variable "Time_Extents" is read but never assigned
