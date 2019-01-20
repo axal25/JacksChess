@@ -8,6 +8,8 @@ with Gtk.Enums;
 with Gtk.Widget;
 with Glib;
 with Ada.Text_IO;
+with Gtk.Bin;
+with Gtk.Image;
 
 package body VisualLayer is
    
@@ -34,6 +36,7 @@ package body VisualLayer is
                                   aTable : in out Gtk.Table.Gtk_Table;
                                   aButtonGrid : in out ButtonGrid;
                                   aAlignmentGrid : in out AlignmentGrid ) is
+      tmp : LabelWithAlignment;
    begin
       Gtk.Main.Init;
 
@@ -43,16 +46,29 @@ package body VisualLayer is
       Gtk.Box.Gtk_New_Vbox( aVbox );
       Gtk.Window.Add( aWindow, aVbox );
          
-      aTable := Gtk.Table.Gtk_Table_New( Rows        => Glib.Guint( 8 ),
-                                         Columns     => Glib.Guint( 8 ),
+      aTable := Gtk.Table.Gtk_Table_New( Rows        => Glib.Guint( 10 ),
+                                         Columns     => Glib.Guint( 10 ),
                                          Homogeneous => True );
       aVbox.Pack_Start(Child   => aTable,
                        Padding => 0 );
-         
+      
       for row in AxisY range 1..8 loop
          for col in AxisX range A..H loop
-            Ada.Text_IO.Put_Line("[" & row'Img & "," & col'Img & "]");
-            Gtk.Button.Gtk_New( aButtonGrid( row, col ), String("[" & row'Img & "," & col'Img & "]") );
+            
+            tmp := GetEmptyLabel( aY     => row,
+                                  aX     => col,
+                                  aTable => aTable );
+            tmp := GetLabel( aY     => row,
+                             aX     => col,
+                             aTable => aTable );
+            
+            Ada.Text_IO.Put_Line("[" & row'Img & "," & col'Img & "] => [" & AxisY_For_Print( row )'Img & ", " & col'Img & " ]");
+            Gtk.Button.Gtk_New( aButtonGrid( row, col ), 
+                                String("[" & row'Img & "," & col'Img & "] => [" & AxisY_For_Print( row )'Img & ", " & col'Img & " ]") 
+                               );
+            
+            aButtonGrid( row, col ) := Paint_Button( aButtonGrid, row, col );
+            -- aButtonGrid( row, col ) := Paint_Button( aButtonGrid, Integer( row ), AxisX_to_Integer( col ) );
             
             aAlignmentGrid( row, col ) := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
                                                                            Yalign => 0.5,
@@ -62,10 +78,10 @@ package body VisualLayer is
             aAlignmentGrid( row, col ).Add( Widget => aButtonGrid( row, col ) );
             
             aTable.Attach( Child         => aAlignmentGrid( row, col ),
-                           Left_Attach   => Glib.Guint( AxisX_to_Integer( col )-1 ),
-                           Right_Attach  => Glib.Guint( AxisX_to_Integer( col ) ),
-                           Top_Attach    => Glib.Guint( row-1 ),
-                           Bottom_Attach => Glib.Guint( row ) );
+                           Left_Attach   => Glib.Guint( AxisX_to_Integer( col ) ),
+                           Right_Attach  => Glib.Guint( AxisX_to_Integer( col )+1 ),
+                           Top_Attach    => Glib.Guint( row ),
+                           Bottom_Attach => Glib.Guint( row+1 ) );
          end loop;
       end loop;
          
@@ -73,15 +89,15 @@ package body VisualLayer is
 
       
       
---        --  Using object_connect.
---        --  The callback is automatically destroyed when button2 is destroyed, so
---        --  you can press button1 as many times as you want, no problem
---        Gtk.Box.Gtk_New_Hbox (Hbox);
---        Gtk.Box.Pack_Start (Vbox, Hbox);
---        Gtk.Button.Gtk_New ( Gtk.Button.Gtk_Button( Button1 ), "button1, object connect");
---        Gtk.Box.Pack_Start (Hbox, Button1);
---        Gtk.Button.Gtk_New (Gtk.Button.Gtk_Button( Button2 ), "button2");
---        Gtk.Box.Pack_Start (Hbox, Button2);
+      --        --  Using object_connect.
+      --        --  The callback is automatically destroyed when button2 is destroyed, so
+      --        --  you can press button1 as many times as you want, no problem
+      --        Gtk.Box.Gtk_New_Hbox (Hbox);
+      --        Gtk.Box.Pack_Start (Vbox, Hbox);
+      --        Gtk.Button.Gtk_New ( Gtk.Button.Gtk_Button( Button1 ), "button1, object connect");
+      --        Gtk.Box.Pack_Start (Hbox, Button1);
+      --        Gtk.Button.Gtk_New (Gtk.Button.Gtk_Button( Button2 ), "button2");
+      --        Gtk.Box.Pack_Start (Hbox, Button2);
    end Initiate_MainWindow;
    
    function AxisX_to_Integer( aX : AxisX ) return Integer is 
@@ -89,12 +105,155 @@ package body VisualLayer is
       return ModelLayer.AxisX_to_Integer( ModelLayer.AxisX( aX ) );
    end AxisX_to_Integer;
    
-   procedure DestroyObject_And_MainQuit (Object: access Gtk.Widget.Gtk_Widget_Record'Class) is --on event
+   function Integer_to_AxisX( aRowNo : Integer ) return AxisX is
+   begin
+      return AxisX( ModelLayer.Integer_to_AxisX( aRowNo ) );
+   end Integer_to_AxisX;
+   
+   procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
       -- close main window if Delete_Event return False (it means it's allowed to close);
    begin
       Ada.Text_IO.Put_Line( "X clicked - Destroying object" );
-      Gtk.Widget.Destroy (Object);
+      Gtk.Widget.Destroy( Object );
       Gtk.Main.Main_Quit;
    end DestroyObject_And_MainQuit;
+   
+   function AxisY_For_Print( aY : in AxisY ) return AxisY is
+      aY_For_Print : AxisY := 9 - aY;
+   begin
+      return aY_For_Print;
+   end AxisY_For_Print;
+   
+   function Paint_Button( aButtonGrid : in out ButtonGrid;
+                          aRowNo : in Integer;
+                          aColNo : in Integer ) 
+                         return Gtk.Button.Gtk_Button is
+      row : AxisY := AxisY( aRowNo );
+      col : AxisX := Integer_to_AxisX( aColNo );
+      aButton : Gtk.Button.Gtk_Button := aButtonGrid( row, col );
+      aChild : Gtk.Widget.Gtk_Widget := Gtk.Bin.Gtk_Bin( aButton ).Get_Child;
+      aImage : Gtk.Image.Gtk_Image;
+   begin
+      Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
+      aImage := Gtk.Image.Gtk_Image_New_From_File("black_square.png");
+      Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
+      return aButton;
+   end Paint_Button;
+   
+   function Paint_Button( aButtonGrid : in out ButtonGrid;
+                          row : in AxisY;
+                          col : in AxisX ) 
+                         return Gtk.Button.Gtk_Button is
+      aButton : Gtk.Button.Gtk_Button := aButtonGrid( row, col );
+      aChild : Gtk.Widget.Gtk_Widget := Gtk.Bin.Gtk_Bin( aButton ).Get_Child;
+      aImage : Gtk.Image.Gtk_Image;
+   begin
+      Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
+      aImage := Gtk.Image.Gtk_Image_New_From_File("white_square.png");
+      Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
+      return aButton;
+   end Paint_Button;
+   
+   --     type LabelWithAlignment is record
+   --        aLabel : Gtk.Label.Gtk_Label;
+   --        aAlignment : Gtk.Alignment.Gtk_Alignment;
+   --     end record;
+   function GetEmptyLabel( aY : AxisY;
+                           aX : AxisX; 
+                           aTable : Gtk.Table.Gtk_Table ) 
+                          return LabelWithAlignment is
+      aLabelWithAlignment : LabelWithAlignment;
+      row, col : Integer;
+      doDraw : Boolean := false;
+   begin
+      if( aY = 1 and aX = A ) then
+         row := 1;
+         col := 1;
+         doDraw := True;
+      end if;
+      if( aY = 1 and aX = H ) then
+         row := 1;
+         col := 10;
+         doDraw := True;
+      end if;
+      if( aY = 8 and aX = A ) then
+         row := 10;
+         col := 1;
+         doDraw := True;
+      end if;
+      if( aY = 8 and aX = H ) then
+         row := 10;
+         col := 10;
+         doDraw := True;
+      end if;
+      
+      if( doDraw = True ) then
+      aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( " {><} " );
+      aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
+                                                                         Yalign => 0.5,
+                                                                         Xscale => 1.0,
+                                                                         Yscale => 1.0 );      
+      aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
+      aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
+                     Left_Attach   => Glib.Guint( col-1 ),
+                     Right_Attach  => Glib.Guint( col ),
+                     Top_Attach    => Glib.Guint( row-1 ),
+                     Bottom_Attach => Glib.Guint( row ) );
+      end if;
+      
+      return aLabelWithAlignment;
+   end GetEmptyLabel;
+   
+   function GetLabel( aY : AxisY;
+                      aX : AxisX; 
+                      aTable : Gtk.Table.Gtk_Table ) 
+                     return LabelWithAlignment is
+      aLabelWithAlignment : LabelWithAlignment;
+      row, col : Integer;
+      doDraw : Boolean := false;
+   begin
+      if( aY = 1 ) then
+         row := 1;
+         col := AxisX_to_Integer( aX )+1;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( aX'Img );
+      end if;
+      
+      if( aY = 8 ) then
+         row := 10;
+         col := AxisX_to_Integer( aX )+1;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( aX'Img );
+      end if;
+      
+      if( aX = A ) then
+         row := Integer( aY )+1;
+         col := 1;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( AxisY_For_Print( aY )'Img );
+      end if;
+      
+      if( aX = H ) then
+         row := Integer( aY )+1;
+         col := 10;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( AxisY_For_Print( aY )'Img );
+      end if;
+      
+      if( doDraw = True ) then
+      aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
+                                                                         Yalign => 0.5,
+                                                                         Xscale => 1.0,
+                                                                         Yscale => 1.0 );      
+      aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
+      aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
+                     Left_Attach   => Glib.Guint( col-1 ),
+                     Right_Attach  => Glib.Guint( col ),
+                     Top_Attach    => Glib.Guint( row-1 ),
+                     Bottom_Attach => Glib.Guint( row ) );
+      end if;
+      
+      return aLabelWithAlignment;
+   end GetLabel;
    
 end VisualLayer;

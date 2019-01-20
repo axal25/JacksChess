@@ -19,5 +19,19 @@ package body ModelLayer is
          when others => return 8;
       end case;
    end AxisX_to_Integer;
+   
+   function Integer_to_AxisX( aRowNo : Integer ) return AxisX is
+   begin
+      case aRowNo is
+         when 1 => return A;
+         when 2 => return B;
+         when 3 => return C;
+         when 4 => return D;
+         when 5 => return E;
+         when 6 => return F;
+         when 7 => return G;
+         when others => return H;
+      end case;
+   end Integer_to_AxisX;
 
 end ModelLayer;

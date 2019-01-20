@@ -26,11 +26,12 @@ package ModelLayer is
    type Grid is array (AxisY range 1..8, AxisX range A..H) of Square;
    type ChessBoard is record 
       aGrid : Grid;
-      aliveFigures : DynamicTableOfFigures;
+      aliveFigures : DynamicTableOfFigures := new TableOfFigures(1..16, 1..2);
    end record;
    
    procedure Main;
    
    function AxisX_to_Integer( aX : AxisX ) return Integer;
+   function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
 
 end ModelLayer;

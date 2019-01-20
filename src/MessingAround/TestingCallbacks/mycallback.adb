@@ -35,11 +35,14 @@ package body MyCallback is
                                Button => Gtk.Widget.Gtk_Widget (Button2),
                                Id     => ( Gtk.Handlers.Null_Handler_Id, null) );
       
+      
       Id := User_Callback3.Connect
         (Button1, "clicked",
          User_Callback3.To_Marshaller (My_Destroy3'Access),
          Data3);
       Data3.Id := Id;
+      
+      Win.On_Destroy( DestroyObject_And_MainQuit'Access );      
       
       Gtk.Window.Show_All (Win);
       Gtk.Main.Main;
@@ -78,5 +81,13 @@ package body MyCallback is
       Gtk.Widget.Destroy( Data.Button );
       Gtk.Handlers.Disconnect (Data.Object, Data.Id);
    end My_Destroy3;
+   
+   procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
+      -- close main window if Delete_Event return False (it means it's allowed to close);
+   begin
+      Ada.Text_IO.Put_Line( "X clicked - Destroying object" );
+      Gtk.Widget.Destroy( Object );
+      Gtk.Main.Main_Quit;
+   end DestroyObject_And_MainQuit;
    
 end MyCallback;

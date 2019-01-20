@@ -1,4 +1,4 @@
-with GtkAda, Ada.Text_IO, GtkAdaTest1, GtkAdaTest2, GtkAdaTest_Animation, GtkAdaTest_Clock, GtkAdaTest_AdaCore, AnotherTutorial, Minesweeper, FirstApplication, CallBack_V1, MyCallback, VisualLayer;
+with GtkAda, Ada.Text_IO, GtkAdaTest1, GtkAdaTest2, GtkAdaTest_Animation, GtkAdaTest_Clock, GtkAdaTest_AdaCore, AnotherTutorial, Minesweeper, FirstApplication, CallBack_V1, CallBack_V2, MyCallback, VisualLayer;
 use Ada.Text_IO;
 
 procedure Main is
@@ -41,8 +41,10 @@ begin
 --     Minesweeper.Main;
 
    --     CallBack_V1.Main;
-   -- MyCallback.Main;
+   CallBack_V2.Main;
+--     MyCallback.Main;
    VisualLayer.Main;
+
 
    Put_Line("Da BIG Main - Finish");
    Spam;

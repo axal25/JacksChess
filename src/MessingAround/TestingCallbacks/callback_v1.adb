@@ -77,4 +77,5 @@ package body CallBack_V1 is
       Gtk.Widget.Destroy( Data.Button );
       Gtk.Handlers.Disconnect (Data.Object, Data.Id);
    end My_Destroy3;
+   
 end CallBack_V1;
