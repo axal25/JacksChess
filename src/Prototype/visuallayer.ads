@@ -22,19 +22,18 @@ package VisualLayer is
       aAlignmentGrid : AlignmentGrid;
    end record;
    
-   type MainWindow_Access is access all VisualLayer.MainWindow;
-   type ChessBoard_Access is access all ModelLayer.ChessBoard;
    type AllData is record
-      aMainWindow_Access : MainWindow_Access;
-      aChessBoard_Access : ChessBoard_Access;
+      aMainWindow : VisualLayer.MainWindow;
+      aChessBoard : ModelLayer.ChessBoard;
    end record;
    function Main return AllData;
-   procedure Initiate_MainWindow( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard );
+   procedure Initiate_MainWindow( aMainWindow : in out MainWindow );
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
                                   aVbox : in out Gtk.Box.Gtk_Vbox;
                                   aTable : in out Gtk.Table.Gtk_Table;
                                   aButtonGrid: in out ButtonGrid;
                                   aAlignmentGrid: in out AlignmentGrid );
+   procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard );
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );

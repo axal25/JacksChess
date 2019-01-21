@@ -1,4 +1,4 @@
-with GtkAda, Ada.Text_IO, GtkAdaTest1, GtkAdaTest2, GtkAdaTest_Animation, GtkAdaTest_Clock, GtkAdaTest_AdaCore, AnotherTutorial, Minesweeper, FirstApplication, CallBack_V1, CallBack_V2, MyCallback, VisualLayer;
+with GtkAda, Ada.Text_IO, GtkAdaTest1, GtkAdaTest2, GtkAdaTest_Animation, GtkAdaTest_Clock, GtkAdaTest_AdaCore, AnotherTutorial, Minesweeper, FirstApplication, CallBack_V1, CallBack_V2, MyCallback, VisualLayer, ModelLayer, ControllerLayer;
 use Ada.Text_IO;
 
 procedure Main is
@@ -20,8 +20,6 @@ procedure Main is
       Put_Line("▒▒▒█▄░░░░░▀█▄▄▄█▀▀▒▒▒▒▒▒");
       Put_Line("▒▒▒▒▀▀▀▀▀▀▀▒▒▒▒▒▒▒▒▒▒▒▒▒");
    end Spam;
-
-   aAllData : VisualLayer.AllData;
 begin
    Spam;
    Put_Line("Da BIG Main - Start");
@@ -46,7 +44,7 @@ begin
    --     CallBack_V1.Main;
    CallBack_V2.Main;
    --     MyCallback.Main;
-   aAllData := VisualLayer.Main;
+   ControllerLayer.Main;
 
 
    Put_Line("Da BIG Main - Finish");

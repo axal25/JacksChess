@@ -20,22 +20,18 @@ package body VisualLayer is
    --     end record;
    
    function Main return AllData is
-      aMainWindow : MainWindow;
       aAllData : AllData;
    begin
-      aAllData.aMainWindow_Access := new VisualLayer.MainWindow;
-      aAllData.aMainWindow_Access.all := aMainWindow;
-      aAllData.aChessBoard_Access := new ModelLayer.ChessBoard;
-      aAllData.aChessBoard_Access.all := ModelLayer.Main;
+      aAllData.aChessBoard := ModelLayer.Main;
       
-      Initiate_MainWindow( aMainWindow, aAllData.aChessBoard_Access.all );
-      aMainWindow.aWindow.Show_All;
-      Gtk.Main.Main;
-      
+      Initiate_MainWindow( aAllData.aMainWindow );
+--        aMainWindow.aWindow.Show_All;
+--        Gtk.Main.Main;
+      Initiate_ChessBoard( aAllData.aMainWindow, aAllData.aChessBoard );
       return aAllData;
    end Main;
 
-   procedure Initiate_MainWindow( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+   procedure Initiate_MainWindow( aMainWindow : in out MainWindow ) is
    begin
       Initiate_MainWindow( aWindow => aMainWindow.aWindow,
                            aVbox => aMainWindow.aVbox,
@@ -43,6 +39,11 @@ package body VisualLayer is
                            aButtonGrid => aMainWindow.aButtonGrid,
                            aAlignmentGrid => aMainWindow.aAlignmentGrid );
    end Initiate_MainWindow;
+   
+   procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+   begin
+      null;
+   end Initiate_ChessBoard;
    
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
                                   aVbox : in out Gtk.Box.Gtk_Vbox;
