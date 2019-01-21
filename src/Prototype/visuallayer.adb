@@ -10,6 +10,7 @@ with Glib;
 with Ada.Text_IO;
 with Gtk.Bin;
 with Gtk.Image;
+with ModelLayer;
 
 package body VisualLayer is
    --     type MainWindow_Access is access all VisualLayer.MainWindow;
@@ -25,9 +26,8 @@ package body VisualLayer is
       aAllData.aChessBoard := ModelLayer.Main;
       
       Initiate_MainWindow( aAllData.aMainWindow );
---        aMainWindow.aWindow.Show_All;
---        Gtk.Main.Main;
       Initiate_ChessBoard( aAllData.aMainWindow, aAllData.aChessBoard );
+      
       return aAllData;
    end Main;
 
@@ -42,8 +42,21 @@ package body VisualLayer is
    
    procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
    begin
-      null;
+      for row in aChessBoard.aGrid'Range(1) loop
+         for col in aChessBoard.aGrid'Range(2) loop
+            Initiate_Square( row, col, aMainWindow, aChessBoard );
+         end loop;
+      end loop;
    end Initiate_ChessBoard;
+   
+   procedure Initiate_Square( row : ModelLayer.AxisY; col : ModelLayer.AxisX; aMainWindow : MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+   begin
+      if( ModelLayer.isWhite( aChessBoard.aGrid( row, col ) ) ) then
+         null;
+      else
+         null;
+      end if;
+   end Initiate_Square;
    
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
                                   aVbox : in out Gtk.Box.Gtk_Vbox;
@@ -152,7 +165,7 @@ package body VisualLayer is
       aImage : Gtk.Image.Gtk_Image;
    begin
       Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
-      aImage := Gtk.Image.Gtk_Image_New_From_File("black_square.png");
+      aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_empty.png");
       Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
       return aButton;
    end Paint_Button;
@@ -166,7 +179,7 @@ package body VisualLayer is
       aImage : Gtk.Image.Gtk_Image;
    begin
       Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
-      aImage := Gtk.Image.Gtk_Image_New_From_File("white_square.png");
+      aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_empty.png");
       Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
       return aButton;
    end Paint_Button;

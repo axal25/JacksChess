@@ -46,7 +46,8 @@ project Jackschess is
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
                                "src/MessingAround/TestingCallbacks",
-                               "src/Prototype" );
+                               "src/Prototype",
+                               "images" );
 
       when "static-pic" =>
          for Source_Dirs use ( "src",
@@ -56,7 +57,8 @@ project Jackschess is
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
                                "src/MessingAround/TestingCallbacks",
-                               "src/Prototype" );
+                               "src/Prototype",
+                               "images" );
 
       when "relocatable" =>
          for Source_Dirs use ( "src",
@@ -66,7 +68,8 @@ project Jackschess is
                                "src/MessingAround/AnotherTutorial",
                                "src/MessingAround/Minesweeper",
                                "src/MessingAround/TestingCallbacks",
-                               "src/Prototype" );
+                               "src/Prototype",
+                               "images" );
    end case;
 
 end Jackschess;

@@ -58,5 +58,23 @@ package body ModelLayer is
          when others => return H;
       end case;
    end Integer_to_AxisX;
+   
+   function isWhite( aSquare : Square ) return Boolean is
+   begin
+      if( aSquare.aColor = White ) then
+         return True;
+      else
+         return False;
+      end if;
+   end isWhite;
+   
+   function isBlack( aSquare : Square ) return Boolean is
+   begin
+      if( aSquare.aColor = Black ) then
+         return True;
+      else
+         return False;
+      end if;
+   end isBlack;
 
 end ModelLayer;

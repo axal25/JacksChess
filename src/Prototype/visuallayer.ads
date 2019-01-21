@@ -34,6 +34,7 @@ package VisualLayer is
                                   aButtonGrid: in out ButtonGrid;
                                   aAlignmentGrid: in out AlignmentGrid );
    procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard );
+   procedure Initiate_Square( row : ModelLayer.AxisY; col : ModelLayer.AxisX; aMainWindow : MainWindow; aChessBoard : ModelLayer.ChessBoard );
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );

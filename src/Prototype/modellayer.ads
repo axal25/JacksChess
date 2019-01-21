@@ -35,5 +35,8 @@ package ModelLayer is
    
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
+   
+   function isWhite( aSquare : Square ) return Boolean;
+   function isBlack( aSquare : Square ) return Boolean;
 
 end ModelLayer;
