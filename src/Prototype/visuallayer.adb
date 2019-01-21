@@ -12,17 +12,30 @@ with Gtk.Bin;
 with Gtk.Image;
 
 package body VisualLayer is
+   --     type MainWindow_Access is access all VisualLayer.MainWindow;
+   --     type ChessBoard_Access is access all ModelLayer.ChessBoard;
+   --     type AllData is record
+   --        aMainWindow_Access : MainWindow_Access;
+   --        aChessBoard_Access : ChessBoard_Access;
+   --     end record;
    
-   procedure Main is
+   function Main return AllData is
       aMainWindow : MainWindow;
+      aAllData : AllData;
    begin
-      Initiate_MainWindow( aMainWindow );
+      aAllData.aMainWindow_Access := new VisualLayer.MainWindow;
+      aAllData.aMainWindow_Access.all := aMainWindow;
+      aAllData.aChessBoard_Access := new ModelLayer.ChessBoard;
+      aAllData.aChessBoard_Access.all := ModelLayer.Main;
       
+      Initiate_MainWindow( aMainWindow, aAllData.aChessBoard_Access.all );
       aMainWindow.aWindow.Show_All;
       Gtk.Main.Main;
+      
+      return aAllData;
    end Main;
 
-   procedure Initiate_MainWindow( aMainWindow : in out MainWindow ) is
+   procedure Initiate_MainWindow( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
    begin
       Initiate_MainWindow( aWindow => aMainWindow.aWindow,
                            aVbox => aMainWindow.aVbox,
@@ -61,6 +74,9 @@ package body VisualLayer is
             tmp := GetLabel( aY     => row,
                              aX     => col,
                              aTable => aTable );
+            tmp := GetLabel2( aY     => row,
+                              aX     => col,
+                              aTable => aTable );
             
             Ada.Text_IO.Put_Line("[" & row'Img & "," & col'Img & "] => [" & AxisY_For_Print( row )'Img & ", " & col'Img & " ]");
             Gtk.Button.Gtk_New( aButtonGrid( row, col ), 
@@ -188,17 +204,17 @@ package body VisualLayer is
       end if;
       
       if( doDraw = True ) then
-      aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( " {><} " );
-      aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
-                                                                         Yalign => 0.5,
-                                                                         Xscale => 1.0,
-                                                                         Yscale => 1.0 );      
-      aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
-      aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
-                     Left_Attach   => Glib.Guint( col-1 ),
-                     Right_Attach  => Glib.Guint( col ),
-                     Top_Attach    => Glib.Guint( row-1 ),
-                     Bottom_Attach => Glib.Guint( row ) );
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( " {><} " );
+         aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
+                                                                            Yalign => 0.5,
+                                                                            Xscale => 1.0,
+                                                                            Yscale => 1.0 );      
+         aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
+         aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
+                        Left_Attach   => Glib.Guint( col-1 ),
+                        Right_Attach  => Glib.Guint( col ),
+                        Top_Attach    => Glib.Guint( row-1 ),
+                        Bottom_Attach => Glib.Guint( row ) );
       end if;
       
       return aLabelWithAlignment;
@@ -241,19 +257,57 @@ package body VisualLayer is
       end if;
       
       if( doDraw = True ) then
-      aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
-                                                                         Yalign => 0.5,
-                                                                         Xscale => 1.0,
-                                                                         Yscale => 1.0 );      
-      aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
-      aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
-                     Left_Attach   => Glib.Guint( col-1 ),
-                     Right_Attach  => Glib.Guint( col ),
-                     Top_Attach    => Glib.Guint( row-1 ),
-                     Bottom_Attach => Glib.Guint( row ) );
+         aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
+                                                                            Yalign => 0.5,
+                                                                            Xscale => 1.0,
+                                                                            Yscale => 1.0 );      
+         aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
+         aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
+                        Left_Attach   => Glib.Guint( col-1 ),
+                        Right_Attach  => Glib.Guint( col ),
+                        Top_Attach    => Glib.Guint( row-1 ),
+                        Bottom_Attach => Glib.Guint( row ) );
       end if;
       
       return aLabelWithAlignment;
    end GetLabel;
+   
+   function GetLabel2( aY : AxisY;
+                       aX : AxisX; 
+                       aTable : Gtk.Table.Gtk_Table ) 
+                      return LabelWithAlignment is
+      aLabelWithAlignment : LabelWithAlignment;
+      row, col : Integer;
+      doDraw : Boolean := false;
+   begin
+      if( (aY = 1) and (aX = A or aX = H) ) then
+         row := 1;
+         col := AxisX_to_Integer( aX )+1;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( aX'Img );
+      end if;
+      
+      if( (aY = 8) and (aX = A or aX = H) ) then
+         row := 10;
+         col := AxisX_to_Integer( aX )+1;
+         doDraw := True;
+         aLabelWithAlignment.aLabel := Gtk.Label.Gtk_Label_New( aX'Img );
+      end if;
+      
+      if( doDraw = True ) then
+         aLabelWithAlignment.aAlignment := Gtk.Alignment.Gtk_Alignment_New( Xalign => 0.5,
+                                                                            Yalign => 0.5,
+                                                                            Xscale => 1.0,
+                                                                            Yscale => 1.0 );      
+         aLabelWithAlignment.aAlignment.Add( Widget => aLabelWithAlignment.aLabel );            
+         aTable.Attach( Child         => aLabelWithAlignment.aAlignment,
+                        Left_Attach   => Glib.Guint( col-1 ),
+                        Right_Attach  => Glib.Guint( col ),
+                        Top_Attach    => Glib.Guint( row-1 ),
+                        Bottom_Attach => Glib.Guint( row ) );
+      end if;
+      
+      return aLabelWithAlignment;
+   end GetLabel2;
    
 end VisualLayer;

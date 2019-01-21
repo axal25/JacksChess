@@ -1,9 +1,34 @@
 package body ModelLayer is
 
-   procedure Main is 
+   function Main return ChessBoard is 
+      aChessBoard : ChessBoard;
    begin
-      null;
+      aChessBoard.aGrid := Init_Grid( aChessBoard.aGrid );
+      return aChessBoard;
    end Main;
+   
+   function Init_Grid( aGrid : in out Grid ) return Grid is
+   begin
+      for row in aGrid'Range(1) loop
+         for col in aGrid'Range(2) loop
+            if( row mod 2 = 0 ) then
+               if( AxisX_to_Integer( col ) mod 2 = 0 ) then
+                  aGrid( row, col ).aColor := White;
+               else
+                  aGrid( row, col ).aColor := Black;
+               end if;
+            else
+               if( AxisX_to_Integer( col ) mod 2 = 1 ) then
+                  aGrid( row, col ).aColor := White;
+               else
+                  aGrid( row, col ).aColor := Black;
+               end if;
+            end if;
+         end loop;
+      end loop;
+      
+      return aGrid;
+   end Init_Grid;
    
    -- type AxisX is ( A, B, C, D, E, F, G, H );
    function AxisX_to_Integer( aX : AxisX ) return Integer is

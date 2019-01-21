@@ -3,6 +3,7 @@ use Ada.Text_IO;
 
 procedure Main is
    Unhandled_Exception : exception;
+
    procedure Spam is
    begin
       Put_Line("▒▒▒▒▒▒▒▒▄▄▄▄▄▄▄▄▒▒▒▒▒▒▒▒");
@@ -19,6 +20,8 @@ procedure Main is
       Put_Line("▒▒▒█▄░░░░░▀█▄▄▄█▀▀▒▒▒▒▒▒");
       Put_Line("▒▒▒▒▀▀▀▀▀▀▀▒▒▒▒▒▒▒▒▒▒▒▒▒");
    end Spam;
+
+   aAllData : VisualLayer.AllData;
 begin
    Spam;
    Put_Line("Da BIG Main - Start");
@@ -42,8 +45,8 @@ begin
 
    --     CallBack_V1.Main;
    CallBack_V2.Main;
---     MyCallback.Main;
-   VisualLayer.Main;
+   --     MyCallback.Main;
+   aAllData := VisualLayer.Main;
 
 
    Put_Line("Da BIG Main - Finish");

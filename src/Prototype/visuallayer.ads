@@ -22,8 +22,14 @@ package VisualLayer is
       aAlignmentGrid : AlignmentGrid;
    end record;
    
-   procedure Main;
-   procedure Initiate_MainWindow( aMainWindow : in out MainWindow );
+   type MainWindow_Access is access all VisualLayer.MainWindow;
+   type ChessBoard_Access is access all ModelLayer.ChessBoard;
+   type AllData is record
+      aMainWindow_Access : MainWindow_Access;
+      aChessBoard_Access : ChessBoard_Access;
+   end record;
+   function Main return AllData;
+   procedure Initiate_MainWindow( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard );
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
                                   aVbox : in out Gtk.Box.Gtk_Vbox;
                                   aTable : in out Gtk.Table.Gtk_Table;
@@ -56,15 +62,8 @@ package VisualLayer is
                       aX : AxisX; 
                       aTable : Gtk.Table.Gtk_Table ) 
                      return LabelWithAlignment;
-   
-   -- /** Trying **/ --
-   type MainWindow_Access is access all MainWindow;
-   type AllData is record
-      aMainWindow_Access : MainWindow_Access;
-      aChessBoard : ModelLayer.ChessBoard;
---        Id     : Gtk.Handlers.Handler_Id;
-   end record;
-   type AllData_Access is access AllData;
-   -- /** Trying **/ --
-
+   function GetLabel2( aY : AxisY;
+                       aX : AxisX; 
+                       aTable : Gtk.Table.Gtk_Table ) 
+                      return LabelWithAlignment;
 end VisualLayer;
