@@ -49,13 +49,24 @@ package body VisualLayer is
       end loop;
    end Initiate_ChessBoard;
    
-   procedure Initiate_Square( row : ModelLayer.AxisY; col : ModelLayer.AxisX; aMainWindow : MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+   procedure Initiate_Square( aRowNo : ModelLayer.AxisY; aColNo : ModelLayer.AxisX; 
+                              aMainWindow : MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+      aButtonGrid : ButtonGrid := aMainWindow.aButtonGrid;
+      row : AxisY := AxisY( aRowNo );
+      col : AxisX := AxisX( aColNo );
+      aButton : Gtk.Button.Gtk_Button := aButtonGrid( row, col );
+      aChild : Gtk.Widget.Gtk_Widget := Gtk.Bin.Gtk_Bin( aButton ).Get_Child;
+      aImage : Gtk.Image.Gtk_Image;
    begin
-      if( ModelLayer.isWhite( aChessBoard.aGrid( row, col ) ) ) then
-         null;
+      Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
+      
+      if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ) ) ) then
+         aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_empty.png");
       else
-         null;
+         aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_empty.png");
       end if;
+      
+      Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
    end Initiate_Square;
    
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
