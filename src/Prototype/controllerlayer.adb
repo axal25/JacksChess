@@ -156,7 +156,6 @@ package body ControllerLayer is
       
    end FindPossibleMoves;
    
-<<<<<<< HEAD
    procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position ) is
       aColor : ModelLayer.Color;
       aFigureType : ModelLayer.FigureType;
@@ -187,6 +186,7 @@ package body ControllerLayer is
             
             if( ModelLayer.AxisX_to_Integer( col )<8) then
                tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col ) +1 );
+               --Put_Line( ">> ATTACK POSMOVE ["tmp_col'Img & "]" );
                if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aColor = Black) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
                end if;
@@ -214,11 +214,9 @@ package body ControllerLayer is
                
    end FindPossibleMovesPawn;   
       
-   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves is
-=======
+
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in NaturalAndZero ) return PossibleMoves is
       aNewPossibleMoves : PossibleMoves;
->>>>>>> e17d693e3e744e0ea5f0dc11923bae06b4480158
    begin
       if( newSize > 0 ) then
          aNewPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
