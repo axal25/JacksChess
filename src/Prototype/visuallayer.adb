@@ -89,11 +89,11 @@ package body VisualLayer is
          
          if( aChessBoard.aGrid( aRowNo, aColNo ).isActivated = True ) then
             aFilePath := aFilePath & "_activated";
-         else
-            if( aChessBoard.aGrid( aRowNo, aColNo ).isPossibleMove = True ) then
-               aFilePath := aFilePath & "_possible_move";
-            end if;
          end if;
+      end if;
+      
+      if( aChessBoard.aGrid( aRowNo, aColNo ).isPossibleMove = True ) then
+         aFilePath := aFilePath & "_possible_move";
       end if;
       
       aFilePath := aFilePath & ".png";
