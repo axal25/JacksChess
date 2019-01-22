@@ -111,8 +111,8 @@ package body ControllerLayer is
       isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
       tmpPosition : ModelLayer.Position := aPosition;
    begin
-      tmpPosition.aYPosition := tmpPosition.aYPosition +1;
-      tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) +1 );
+      ---tmpPosition.aYPosition := aPosition.aYPosition +1;
+      ---tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) +1 );
       Put_Line( ">> [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
       if( isTaken = True ) then
          aFigureType := ModelLayer.FigureType'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType );
@@ -121,11 +121,27 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
                --    if(white)
                if(aColor = White) then
-                  if(tmpPosition.aYPosition>1)
-                    
+                   --     if(row<1)
+                  if(aPosition.aYPosition > 1) then
+                  tmpPosition.aYPosition := aPosition.aYPosition -1;
+                     if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = False) then
+                        Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
+                     end if; 
+                     if(ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( aPosition.aXPosition )>1) then
+                        tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) -1 );
+                        if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).aColor = Black)then
+                            Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
+                        end if;
+                     end if;     
                   end if;  
+                  if(aPosition.aYPosition = 7) then
+                     tmpPosition.aYPosition := 5;
+                     if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = False) then
+                        Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
+                     end if;     
+                  end if;
                end if;
-          --     if(row<1)
+         
           --     if(col, row-1).isEmpty	
            --      possiblemoves.add(col,row-1)		
           --     if( row=7) & (col, row-2).isEmpty	
