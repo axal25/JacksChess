@@ -111,6 +111,7 @@ package body ControllerLayer is
       aFigureType : ModelLayer.FigureType;
       isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
       tmpPosition : ModelLayer.Position := aPosition;
+      row : ModelLayer.AxisY := aPosition.aYPosition;
    begin
       ---tmpPosition.aYPosition := aPosition.aYPosition +1;
       ---tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) +1 );
@@ -120,41 +121,7 @@ package body ControllerLayer is
          aColor := ModelLayer.Color'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
          case aFigureType is
             when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
-               --    if(white)
-               if(aColor = White) then
-                   --     if(row<1)
-                  if(aPosition.aYPosition > 1) then
-                     tmpPosition.aYPosition := aPosition.aYPosition -1;
-
-                     if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = False) then
-                        Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
-                     end if; 
-                     if( ModelLayer.AxisX_to_Integer( aPosition.aXPosition )>1) then
-                        tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) -1 );
-                        if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).aColor = Black)then
-                            Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
-                        end if;
-                     end if;     
-                  end if;  
-                  if(aPosition.aYPosition = 7) then
-                     tmpPosition.aYPosition := 5;
-                     if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = False) then
-                        Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
-                     end if;     
-                  end if;
-               end if;
-         
-          --     if(col, row-1).isEmpty	
-           --      possiblemoves.add(col,row-1)		
-          --     if( row=7) & (col, row-2).isEmpty	
-          --       possiblemoves.add(col,row-2)	
-          --       attack	
-          --     if(col-1, row-1).isBlackFigure		
-          --       possiblemoves.add(col-1, row-1)		
-          --     if(col+1, row-1).isBlackFigure	
-           --       possiblemoves.add(col+1, row-1)	
-           
-               
+               FindPossibleMovesPawn(aPosition => aPosition);
             when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
             when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
             when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
@@ -169,6 +136,63 @@ package body ControllerLayer is
       
    end FindPossibleMoves;
    
+   procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position ) is
+      aColor : ModelLayer.Color;
+      aFigureType : ModelLayer.FigureType;
+      isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
+      --tmpPosition : ModelLayer.Position := aPosition;
+      row : ModelLayer.AxisY := aPosition.aYPosition;
+      col : ModelLayer.AxisX := aPosition.aXPosition;
+      tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
+      tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
+   begin
+      --    if(white)
+      row := 3;
+      if(aColor = White) then
+         --     if(row<1)
+                 
+         if(row > 1) then
+            tmp_row := row -1;
+
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if; 
+            if( ModelLayer.AxisX_to_Integer( col )>1) then
+               tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col ) -1 );
+               if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aColor = Black) then
+                  Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               end if;
+            end if;
+            
+            if( ModelLayer.AxisX_to_Integer( col )<8) then
+               tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col ) +1 );
+               if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aColor = Black) then
+                  Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               end if;
+            end if;     
+         end if;  
+         if(row = 7) then
+            tmp_col := col;  
+            tmp_row := 5;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;     
+         end if;
+      end if;
+         
+      --     if(col, row-1).isEmpty	
+      --      possiblemoves.add(col,row-1)		
+      --     if( row=7) & (col, row-2).isEmpty	
+      --       possiblemoves.add(col,row-2)	
+      --       attack	
+      --     if(col-1, row-1).isBlackFigure		
+      --       possiblemoves.add(col-1, row-1)		
+      --     if(col+1, row-1).isBlackFigure	
+      --       possiblemoves.add(col+1, row-1)	
+           
+               
+   end FindPossibleMovesPawn;   
+      
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves is
    begin
       if( newSize > 0 ) then
