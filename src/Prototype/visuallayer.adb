@@ -10,6 +10,7 @@ with Glib;
 with Ada.Text_IO;
 with Gtk.Bin;
 with Gtk.Image;
+with Gtk.Container;
 with ModelLayer;
 
       
@@ -101,6 +102,23 @@ package body VisualLayer is
       
       Gtk.Bin.Gtk_Bin( aMainWindow.aButtonGrid( row, col ) ).Add( Widget => aImage );
    end Update_Button;
+   
+   procedure Renew_Button( aRowNo : in ModelLayer.AxisY; aColNo : in ModelLayer.AxisX; 
+                           aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard ) is
+      row : AxisY := AxisY( aRowNo );
+      col : AxisX := AxisX( aColNo );
+   begin      
+      Gtk.Container.Remove( Container => Gtk.Container.Gtk_Container( aMainWindow.aAlignmentGrid( row, col ) ),
+                            Widget    => Gtk.Widget.Gtk_Widget( aMainWindow.aButtonGrid( row, col ) ) );
+      Gtk.Button.Gtk_New( Button => aMainWindow.aButtonGrid( row, col ),
+                          Label  => "Renewed_Button" );
+      aMainWindow.aAlignmentGrid( row, col ).Add( Widget => aMainWindow.aButtonGrid( row, col ) );
+      
+      Update_Button( aRowNo      => aRowNo,
+                     aColNo      => aColNo,
+                     aMainWindow => aMainWindow,
+                     aChessBoard => aChessBoard );
+   end Renew_Button;
    
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
                                   aVbox : in out Gtk.Box.Gtk_Vbox;

@@ -36,6 +36,8 @@ package VisualLayer is
    procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard );
    procedure Update_Button( aRowNo : in ModelLayer.AxisY; aColNo : in ModelLayer.AxisX; 
                             aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard );
+   procedure Renew_Button( aRowNo : in ModelLayer.AxisY; aColNo : in ModelLayer.AxisX; 
+                           aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard );
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
