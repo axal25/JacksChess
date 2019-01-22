@@ -6,6 +6,7 @@ with Gtk.Window;
 with Gtk.Button;
 with Gtk.Bin;
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body ControllerLayer is
 
@@ -125,8 +126,9 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.Queen ) => Put_Line( "_queen" );
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
          end case;
-         aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
+         -- aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
          aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition );
+         Put_Line( PossibleMovesToString( aPossibleMoves ) );
       end if;
       
       
@@ -134,10 +136,11 @@ package body ControllerLayer is
    
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves is
    begin
-      outterPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
-      outterPossibleMoves.First := 1;
-      outterPossibleMoves.Last := newSize;
-      
+      if( newSize > 0 ) then
+         outterPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
+         outterPossibleMoves.First := 1;
+         outterPossibleMoves.Last := newSize;
+      end if;
       return outterPossibleMoves;
    end newPossibleMoves;
    
@@ -145,12 +148,42 @@ package body ControllerLayer is
       aNewPossibleMoves : PossibleMoves; 
    begin
       aNewPossibleMoves := newPossibleMoves( aNewPossibleMoves, outterPossibleMoves.Last +1 );
-      for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
-         aNewPossibleMoves.aDynamicTable( I ) := outterPossibleMoves.aDynamicTable( I );
-      end loop;
-      aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
+      if( aNewPossibleMoves.First = aNewPossibleMoves.Last ) then
+         aNewPossibleMoves.aDynamicTable( aNewPossibleMoves.First ) := newPosition;
+      else
+         for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
+            aNewPossibleMoves.aDynamicTable( I ) := outterPossibleMoves.aDynamicTable( I );
+         end loop;
+         aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
+      end if;
       
       return aNewPossibleMoves;
    end appendPossibleMoves;
+   
+   function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String is
+      aDynString : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String("[ ");
+   begin
+      if( outterPossibleMoves.First = outterPossibleMoves.Last ) then
+         aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aYPosition'Img & 
+           "," & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aXPosition'Img & "}";
+      else
+         for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
+            if( I = outterPossibleMoves.First ) then
+               aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
+                 "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
+            else
+               aDynString := aDynString & " , {" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
+                 "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
+            end if;
+         end loop;
+      end if;
+         
+      aDynString := aDynString & " ]";
+      declare
+         aString : String := Ada.Strings.Unbounded.To_String( aDynString );
+      begin
+         return aString;
+      end;
+   end;
 
 end ControllerLayer;

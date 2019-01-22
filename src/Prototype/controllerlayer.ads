@@ -14,6 +14,7 @@ package ControllerLayer is
    end record;
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves;
    function appendPossibleMoves( outterPossibleMoves : in out PossibleMoves; newPosition : in ModelLayer.Position ) return PossibleMoves;
+   function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String;
 
    procedure SetDeactive_aActivatedPosition;
    procedure SetActive_aActivatedPosition( aPosition : in ModelLayer.Position );
