@@ -12,7 +12,7 @@ package ControllerLayer is
       First : Integer := 0;
       Last : Integer := 0;
    end record;
-   function newPossibleMoves( aPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves;
 
    procedure SetDeactive_aActivatedPosition;
    procedure SetActive_aActivatedPosition( aPosition : in ModelLayer.Position );

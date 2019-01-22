@@ -106,18 +106,31 @@ package body ControllerLayer is
    end SetActive_aActivatedPosition;
    
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position ) is
+      aFigureType : ModelLayer.FigureType;
    begin
-      aPossibleMoves := newPossibleMoves( aPossibleMoves );
+      if( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken = True ) then
+         aFigureType := ModelLayer.FigureType'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType );
+         case ModelLayer.FigureType'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType ) is
+            when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
+            when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
+            when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
+            when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
+            when ModelLayer.FigureType'( ModelLayer.Queen ) => Put_Line( "_queen" );
+            when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
+         end case;
+         aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
+      end if;
+      
       
    end FindPossibleMoves;
    
-   function newPossibleMoves( aPossibleMoves : in out PossibleMoves ) return PossibleMoves is
+   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves is
    begin
-      aPossibleMoves.aDynamicTable := new TableOfPositions(1..10);
-      aPossibleMoves.First := 1;
-      aPossibleMoves.Last := 10;
+      outterPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
+      outterPossibleMoves.First := 1;
+      outterPossibleMoves.Last := newSize;
       
-      return aPossibleMoves;
+      return outterPossibleMoves;
    end newPossibleMoves;
 
 end ControllerLayer;
