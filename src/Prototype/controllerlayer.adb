@@ -124,11 +124,12 @@ package body ControllerLayer is
                if(aColor = White) then
                    --     if(row<1)
                   if(aPosition.aYPosition > 1) then
-                  tmpPosition.aYPosition := aPosition.aYPosition -1;
+                     tmpPosition.aYPosition := aPosition.aYPosition -1;
+
                      if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = False) then
                         Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
                      end if; 
-                     if(ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( aPosition.aXPosition )>1) then
+                     if( ModelLayer.AxisX_to_Integer( aPosition.aXPosition )>1) then
                         tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) -1 );
                         if(aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmpPosition.aYPosition, tmpPosition.aXPosition ).aColor = Black)then
                             Put_Line( ">> POSMOVE [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
