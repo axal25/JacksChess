@@ -162,20 +162,46 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
          end case;
          -- aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
-         aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition );
+         -- aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition );
+         aPossibleMoves := newPossibleMoves( aPossibleMoves , 0 );
+         declare
+            aPosition1, aPosition2, aPosition3, aPosition4, aPosition5, aPosition6, aPosition7 : ModelLayer.Position;
+         begin
+            aPosition1.aYPosition := ModelLayer.AxisY( 1 );     aPosition1.aXPosition := ModelLayer.A;
+            aPosition1.aYPosition := ModelLayer.AxisY( 2 );     aPosition1.aXPosition := ModelLayer.B;
+            aPosition1.aYPosition := ModelLayer.AxisY( 3 );     aPosition1.aXPosition := ModelLayer.C;
+            aPosition1.aYPosition := ModelLayer.AxisY( 4 );     aPosition1.aXPosition := ModelLayer.D;
+            aPosition1.aYPosition := ModelLayer.AxisY( 5 );     aPosition1.aXPosition := ModelLayer.F;
+            aPosition1.aYPosition := ModelLayer.AxisY( 6 );     aPosition1.aXPosition := ModelLayer.G;
+            aPosition1.aYPosition := ModelLayer.AxisY( 7 );     aPosition1.aXPosition := ModelLayer.H;
+            
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition1 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition2 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition3 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition4 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition5 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition6 );
+            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition7 );
+         end;
          Put_Line( PossibleMovesToString( aPossibleMoves ) );
       end if;
       
       
    end FindPossibleMoves;
    
-   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves is
+   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in NaturalAndZero ) return PossibleMoves is
+      aNewPossibleMoves : PossibleMoves;
    begin
       if( newSize > 0 ) then
-         outterPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
-         outterPossibleMoves.First := 1;
-         outterPossibleMoves.Last := newSize;
+         aNewPossibleMoves.aDynamicTable := new TableOfPositions(1..newSize);
+         aNewPossibleMoves.First := 1;
+         aNewPossibleMoves.Last := newSize;
+      else
+         aNewPossibleMoves.aDynamicTable := new TableOfPositions( 0..0 );
+         aNewPossibleMoves.First := 0;
+         aNewPossibleMoves.Last := 0;
       end if;
+      outterPossibleMoves := aNewPossibleMoves;
       return outterPossibleMoves;
    end newPossibleMoves;
    
@@ -191,8 +217,8 @@ package body ControllerLayer is
          end loop;
          aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
       end if;
-      
-      return aNewPossibleMoves;
+      outterPossibleMoves := aNewPossibleMoves;
+      return outterPossibleMoves;
    end appendPossibleMoves;
    
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String is

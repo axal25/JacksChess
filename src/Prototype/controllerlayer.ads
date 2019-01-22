@@ -4,15 +4,15 @@ with Gtk.Widget;
 with Gtk.Handlers;
 
 package ControllerLayer is
-
-   type TableOfPositions is array (natural range <>) of ModelLayer.Position;
+   type NaturalAndZero is new Integer range 0..Integer'Last;
+   type TableOfPositions is array (NaturalAndZero range <>) of ModelLayer.Position;
    type DynamicTableOfPositions is access all TableOfPositions;
    type PossibleMoves is record
       aDynamicTable : DynamicTableOfPositions;
-      First : Integer := 0;
-      Last : Integer := 0;
+      First : NaturalAndZero := 0;
+      Last : NaturalAndZero := 0;
    end record;
-   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in Natural ) return PossibleMoves;
+   function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in NaturalAndZero ) return PossibleMoves;
    function appendPossibleMoves( outterPossibleMoves : in out PossibleMoves; newPosition : in ModelLayer.Position ) return PossibleMoves;
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String;
 
