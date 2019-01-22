@@ -126,6 +126,7 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
          end case;
          aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
+         aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition );
       end if;
       
       
@@ -139,5 +140,17 @@ package body ControllerLayer is
       
       return outterPossibleMoves;
    end newPossibleMoves;
+   
+   function appendPossibleMoves( outterPossibleMoves : in out PossibleMoves; newPosition : in ModelLayer.Position ) return PossibleMoves is
+      aNewPossibleMoves : PossibleMoves; 
+   begin
+      aNewPossibleMoves := newPossibleMoves( aNewPossibleMoves, outterPossibleMoves.Last +1 );
+      for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
+         aNewPossibleMoves.aDynamicTable( I ) := outterPossibleMoves.aDynamicTable( I );
+      end loop;
+      aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
+      
+      return aNewPossibleMoves;
+   end appendPossibleMoves;
 
 end ControllerLayer;
