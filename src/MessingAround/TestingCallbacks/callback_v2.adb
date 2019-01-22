@@ -143,14 +143,14 @@ package body Callback_V2 is
       aStyleContext : Gtk.Style_Context.Gtk_Style_Context := Gtk.Style_Context.Gtk_Style_Context_New;
 --        aStyleProvider : Gtk.Style_Provider.Gtk_Style_Provider := Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider );
    begin
-      Ada.Text_IO.Put_Line( "aCssProvider.Is_Created =" & aCssProvider.Is_Created'Img );
+--        Ada.Text_IO.Put_Line( "aCssProvider.Is_Created =" & aCssProvider.Is_Created'Img );
       isCssProviderSetUp := Gtk.Css_Provider.Load_From_Data( Self  => aCssProvider,
                                                              Data  => aCssData,
                                                              Error => aError );
       
-      Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
+--        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
       aStyleContext := Gtk.Style_Context.Get_Style_Context( Widget => Gtk.Widget.Gtk_Widget( aButton ) );
-      Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
+--        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
       
 --        Gtk.Style_Context.Add_Provider( Self     => aStyleContext,
 --                                        Provider => aCssProvider,
