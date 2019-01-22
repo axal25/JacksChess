@@ -119,6 +119,24 @@ package body ControllerLayer is
          aColor := ModelLayer.Color'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
          case aFigureType is
             when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
+               --    if(white)
+               if(aColor = White) then
+                  if(tmpPosition.aYPosition>1)
+                    
+                  end if;  
+               end if;
+          --     if(row<1)
+          --     if(col, row-1).isEmpty	
+           --      possiblemoves.add(col,row-1)		
+          --     if( row=7) & (col, row-2).isEmpty	
+          --       possiblemoves.add(col,row-2)	
+          --       attack	
+          --     if(col-1, row-1).isBlackFigure		
+          --       possiblemoves.add(col-1, row-1)		
+          --     if(col+1, row-1).isBlackFigure	
+           --       possiblemoves.add(col+1, row-1)	
+           
+               
             when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
             when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
             when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
