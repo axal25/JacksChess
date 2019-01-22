@@ -35,7 +35,7 @@ package body Callback_V2 is
    
    procedure Main is
       Win              : Gtk.Window.Gtk_Window;
-      Button1, Button2, Button3 : Gtk.Button.Gtk_Button;
+      Button1, Button2, Button3, Button4 : Gtk.Button.Gtk_Button;
       Vbox, Hbox       : Gtk.Box.Gtk_Box;
       Id               : Gtk.Handlers.Handler_Id;
       Data3            : My_Data3_Access;
@@ -48,7 +48,8 @@ package body Callback_V2 is
                      Hbox    => Hbox,
                      Button1 => Gtk.Widget.Gtk_Widget( Button1 ),
                      Button2 => Gtk.Widget.Gtk_Widget( Button2 ), 
-                     Button3 => Gtk.Widget.Gtk_Widget( Button3 ) );
+                     Button3 => Gtk.Widget.Gtk_Widget( Button3 ),
+                     Button4 => Gtk.Widget.Gtk_Widget( Button4 ) );
       
       ----------------------------------------------------------------
       Data3 := new My_Data3' ( Object => Gtk.Widget.Gtk_Widget (Button1),
@@ -73,9 +74,27 @@ package body Callback_V2 is
       IdPojemnik := User_Callback_Pojemnik.Connect( Button3, "clicked", 
                                                     User_Callback_Pojemnik.To_Marshaller( DestroyRecord'Access ),
                                                     DataPojemnik );
-      --        Gtk.Handlers.Add_Watch( IdPojemnik, DataPojemnik );
+      -- Gtk.Handlers.Add_Watch( IdPojemnik, DataPojemnik );
       ----------------------------------------------------------------
+      Id := User_Callback.Connect
+        (Button4, "clicked",
+         User_Callback.To_Marshaller (My_Destroy2'Access),
+         Gtk.Widget.Gtk_Widget (Button3));
+      Gtk.Handlers.Add_Watch (Id, Button3);
       
+      DataPojemnik := new MegaPojemnik;
+      DataPojemnik.Button1 := Button1;
+      DataPojemnik.Button2 := Button2;
+      IdPojemnik := User_Callback_Pojemnik.Connect( Button4, "clicked", 
+                                                    User_Callback_Pojemnik.To_Marshaller( DestroyRecord'Access ),
+                                                    DataPojemnik );
+      -- Gtk.Handlers.Add_Watch( IdPojemnik, DataPojemnik );      
+      ----------------------------------------------------------------
+      Gtk.Container.Remove( Container => Gtk.Container.Gtk_Container( Hbox ),
+                            Widget    => Gtk.Widget.Gtk_Widget( Button4 ) );
+      Gtk.Button.Gtk_New( Button => Button4,
+                          Label  => "Button4WithoutConnections" );
+      Gtk.Box.Pack_Start (Hbox, Button4);
       Win.On_Destroy( DestroyObject_And_MainQuit'Access );      
       
       Gtk.Window.Show_All (Win);
@@ -87,7 +106,8 @@ package body Callback_V2 is
                             Hbox : in out Gtk.Box.Gtk_Hbox;
                             Button1 : in out Gtk.Widget.Gtk_Widget; 
                             Button2 : in out Gtk.Widget.Gtk_Widget;
-                            Button3 : in out Gtk.Widget.Gtk_Widget) is
+                            Button3 : in out Gtk.Widget.Gtk_Widget;
+                            Button4 : in out Gtk.Widget.Gtk_Widget ) is
    begin
       Gtk.Main.Init;
 
@@ -102,16 +122,23 @@ package body Callback_V2 is
       --  you can press button1 as many times as you want, no problem
       Gtk.Box.Gtk_New_Hbox (Hbox);
       Gtk.Box.Pack_Start (Vbox, Hbox);
+      
       Gtk.Button.Gtk_New ( Gtk.Button.Gtk_Button( Button1 ), "button1, object connect");
       Gtk.Box.Pack_Start (Hbox, Button1);
+      
       Gtk.Button.Gtk_New (Gtk.Button.Gtk_Button( Button2 ), "button2");
       Gtk.Box.Pack_Start (Hbox, Button2);
+      
       Gtk.Button.Gtk_New (Gtk.Button.Gtk_Button( Button3 ), "button#3");
-      Gtk.Button.Gtk_New(Button => Gtk.Button.Gtk_Button( Button3 ),
-                         Label  => "String");
+      Gtk.Button.Gtk_New( Button => Gtk.Button.Gtk_Button( Button3 ),
+                          Label  => "String1");
+      
+      Gtk.Button.Gtk_New( Button => Gtk.Button.Gtk_Button( Button4 ),
+                          Label  => "String2");
       
       -- Button3 := ColorButton( Gtk.Button.Gtk_Button( Button3 ) );
       Button3 := ColorButton_v2( Gtk.Button.Gtk_Button( Button3 ) );
+      Button4 := ColorButton_v2( Gtk.Button.Gtk_Button( Button4 ) );
       
       declare
          aLabel : Gtk.Label.Gtk_Label;
@@ -128,6 +155,7 @@ package body Callback_V2 is
       end;      
       Button3.Set_Opacity( 0.5 );
       Gtk.Box.Pack_Start (Hbox, Button3);
+      Gtk.Box.Pack_Start (Hbox, Button4);
 
 
    end Init_Elements;
@@ -141,20 +169,20 @@ package body Callback_V2 is
       
       aCssProvider : Gtk.Css_Provider.Gtk_Css_Provider := Gtk.Css_Provider.Gtk_Css_Provider_New;
       aStyleContext : Gtk.Style_Context.Gtk_Style_Context := Gtk.Style_Context.Gtk_Style_Context_New;
---        aStyleProvider : Gtk.Style_Provider.Gtk_Style_Provider := Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider );
+      --        aStyleProvider : Gtk.Style_Provider.Gtk_Style_Provider := Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider );
    begin
---        Ada.Text_IO.Put_Line( "aCssProvider.Is_Created =" & aCssProvider.Is_Created'Img );
+      --        Ada.Text_IO.Put_Line( "aCssProvider.Is_Created =" & aCssProvider.Is_Created'Img );
       isCssProviderSetUp := Gtk.Css_Provider.Load_From_Data( Self  => aCssProvider,
                                                              Data  => aCssData,
                                                              Error => aError );
       
---        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
+      --        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
       aStyleContext := Gtk.Style_Context.Get_Style_Context( Widget => Gtk.Widget.Gtk_Widget( aButton ) );
---        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
+      --        Ada.Text_IO.Put_Line( "aStyleContext.Is_Created = " & aStyleContext.Is_Created'Img );
       
---        Gtk.Style_Context.Add_Provider( Self     => aStyleContext,
---                                        Provider => aCssProvider,
---                                        Priority => Gtk.Style_Provider.Priority_User );
+      --        Gtk.Style_Context.Add_Provider( Self     => aStyleContext,
+      --                                        Provider => aCssProvider,
+      --                                        Priority => Gtk.Style_Provider.Priority_User );
       
       return Gtk.Widget.Gtk_Widget( aButton );
    end;
@@ -217,59 +245,59 @@ package body Callback_V2 is
          Button3_CssProvider : Gtk.Css_Provider.Gtk_Css_Provider := aCssProvider;
          Button3_StyleContext : Gtk.Style_Context.Gtk_Style_Context := Gtk.Style_Context.Get_Style_Context( Widget => Button3 );
          aGtk_Css_Provider_Record : Gtk_Css_Provider_Record;
---           StyleContext1 : Gtk_Style_Context := Gtk_Style_Context( Gtk_Css_Provider_New );
---           Button3_StyleProvider0 : Gtk.Style_Provider.Gtk_Style_Provider := 
---             Gtk.Style_Provider."+"(Button3_CssProvider);
---           Button3_StyleProvider00 : Gtk.Style_Provider.Gtk_Style_Provider := 
---             Button3_CssProvider;
+         --           StyleContext1 : Gtk_Style_Context := Gtk_Style_Context( Gtk_Css_Provider_New );
+         --           Button3_StyleProvider0 : Gtk.Style_Provider.Gtk_Style_Provider := 
+         --             Gtk.Style_Provider."+"(Button3_CssProvider);
+         --           Button3_StyleProvider00 : Gtk.Style_Provider.Gtk_Style_Provider := 
+         --             Button3_CssProvider;
          Button3_StyleProvider : Gtk.Style_Provider.Gtk_Style_Provider;
---           Button3_StyleProvider2 : Gtk.Style_Provider.Gtk_Style_Provider := 
---             Gtk.Style_Provider.Gtk_Style_Provider( Gtk.Css_Provider.Gtk_Css_Provider_New );
---           Button3_StyleProvider3 : Gtk.Style_Provider.Gtk_Style_Provider := 
---             Gtk.Style_Provider.Gtk_Style_Provider( new Gtk.Css_Provider.Gtk_Css_Provider_Record );
+         --           Button3_StyleProvider2 : Gtk.Style_Provider.Gtk_Style_Provider := 
+         --             Gtk.Style_Provider.Gtk_Style_Provider( Gtk.Css_Provider.Gtk_Css_Provider_New );
+         --           Button3_StyleProvider3 : Gtk.Style_Provider.Gtk_Style_Provider := 
+         --             Gtk.Style_Provider.Gtk_Style_Provider( new Gtk.Css_Provider.Gtk_Css_Provider_Record );
 
          
       begin
          null;
---           Get_Style_Context( Widget => Button3 ).Add_Provider( Provider => Button3_CssProvider,
---                                                                Priority => Priority_User );
---           Gtk.Css_Provider."+"(Button3, Button3_CssProvider);
---           Button3_StyleContext.Add_Provider( Provider => aCssProvider,
---                                              Priority => Gtk.Style_Provider.Priority_User );
---           
---           Button3_StyleContext.Add_Provider( Provider => aCssProvider,
---                                              Priority => Gtk.Style_Provider.Priority_User );
---           Button3_StyleProvider := Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider );
---           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
---                                           Provider => Button3_StyleProvider,
---                                           Priority => Gtk.Style_Provider.Priority_User );
---           
---           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
---                                           Provider => aCssProvider,
---                                           Priority => Gtk.Style_Provider.Priority_User );
---           
---           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
---                                          Provider => aCssProvider,
---                                          Priority => Gtk.Style_Provider.Priority_User );
---           
---           Gtk.Style_Context.Get_Style_Context( Widget => Button3 ).Add_Provider( Provider => Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider ),
---                                                                                  Priority => Gtk.Style_Provider.Priority_User);
---           
---           Gtk.Style_Context.Get_Style_Context( Widget => Button3 ).Get_Font( State => Gtk.Enums.Gtk_State_Flags.Gtk_State_Flag_Normal );
+         --           Get_Style_Context( Widget => Button3 ).Add_Provider( Provider => Button3_CssProvider,
+         --                                                                Priority => Priority_User );
+         --           Gtk.Css_Provider."+"(Button3, Button3_CssProvider);
+         --           Button3_StyleContext.Add_Provider( Provider => aCssProvider,
+         --                                              Priority => Gtk.Style_Provider.Priority_User );
+         --           
+         --           Button3_StyleContext.Add_Provider( Provider => aCssProvider,
+         --                                              Priority => Gtk.Style_Provider.Priority_User );
+         --           Button3_StyleProvider := Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider );
+         --           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
+         --                                           Provider => Button3_StyleProvider,
+         --                                           Priority => Gtk.Style_Provider.Priority_User );
+         --           
+         --           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
+         --                                           Provider => aCssProvider,
+         --                                           Priority => Gtk.Style_Provider.Priority_User );
+         --           
+         --           Gtk.Style_Context.Add_Provider( Self     => Button3_StyleContext,
+         --                                          Provider => aCssProvider,
+         --                                          Priority => Gtk.Style_Provider.Priority_User );
+         --           
+         --           Gtk.Style_Context.Get_Style_Context( Widget => Button3 ).Add_Provider( Provider => Gtk.Style_Provider.Gtk_Style_Provider( aCssProvider ),
+         --                                                                                  Priority => Gtk.Style_Provider.Priority_User);
+         --           
+         --           Gtk.Style_Context.Get_Style_Context( Widget => Button3 ).Get_Font( State => Gtk.Enums.Gtk_State_Flags.Gtk_State_Flag_Normal );
       end;
       
       aColor := Gdk.Color.Parse(Spec => "red");
       
---        Gtk.Widget.Modify_Bg(Widget => Gtk.Widget.Gtk_Widget( Button3 ),
---                             State  => Gtk.Enums.State_Normal,
---                             Color  => aColor );
+      --        Gtk.Widget.Modify_Bg(Widget => Gtk.Widget.Gtk_Widget( Button3 ),
+      --                             State  => Gtk.Enums.State_Normal,
+      --                             Color  => aColor );
       
       Gtk.Widget.Modify_Fg(Widget => Gtk.Widget.Gtk_Widget( Button3 ),
                            State  => Gtk.Enums.State_Normal,
                            Color  => aColor);
---        Gtk.Widget.Modify_Base(Widget => Gtk.Widget.Gtk_Widget( Button3 ),
---                             State  => Gtk.Enums.State_Normal,
---                             Color  => aColor);
+      --        Gtk.Widget.Modify_Base(Widget => Gtk.Widget.Gtk_Widget( Button3 ),
+      --                             State  => Gtk.Enums.State_Normal,
+      --                             Color  => aColor);
       Button3.Set_Opacity( 1.0 );
       
       return Gtk.Widget.Gtk_Widget( Button3 );

@@ -36,10 +36,10 @@ begin
    --     GtkAdaTest_Clock.ClockMain; --NOT_WORKING
 
    --     GtkAdaTest_AdaCore.Main;
---     FirstApplication.Application;
+   --     FirstApplication.Application;
 
    --     AnotherTutorial.Main;
---     Minesweeper.Main;
+   --     Minesweeper.Main;
 
    --     CallBack_V1.Main;
    CallBack_V2.Main;

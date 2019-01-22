@@ -99,59 +99,7 @@ package body VisualLayer is
       aFilePath := aFilePath & ".png";
       
       Ada.Text_IO.Put_Line( "[" & aRowNo'Img & ", " & aColNo'Img & " ] " & "aFilePath = " & Ada.Strings.Unbounded.To_String( aFilePath ) );
-      
-      ---------------------       ---------------------       ---------------------
-      
-      if( aChessBoard.aGrid( aRowNo, aColNo ).isTaken = False ) then
-         if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ).aColor ) ) then
-            aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_empty.png");
-         else
-            aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_empty.png");
-         end if;
-      else
-         if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ).aColor ) ) then
-            if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aColor ) ) then
-               case ModelLayer.FigureType'( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aType ) is
-                  when ModelLayer.FigureType'( ModelLayer.Pawn ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_pawn.png");
-                  when ModelLayer.FigureType'( ModelLayer.Knight ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_knight.png");
-                  when ModelLayer.FigureType'( ModelLayer.Bishop ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_bishop.png");
-                  when ModelLayer.FigureType'( ModelLayer.Rook ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_rook.png");
-                  when ModelLayer.FigureType'( ModelLayer.Queen ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_queen.png");
-                  when ModelLayer.FigureType'( ModelLayer.King ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_w_king.png");
-               end case;
-            else
-               case ModelLayer.FigureType'( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aType ) is
-                  when ModelLayer.FigureType'( ModelLayer.Pawn ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_pawn.png");
-                  when ModelLayer.FigureType'( ModelLayer.Knight ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_knight.png");
-                  when ModelLayer.FigureType'( ModelLayer.Bishop ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_bishop.png");
-                  when ModelLayer.FigureType'( ModelLayer.Rook ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_rook.png");
-                  when ModelLayer.FigureType'( ModelLayer.Queen ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_queen.png");
-                  when ModelLayer.FigureType'( ModelLayer.King ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/w_b_king.png");
-               end case;
-            end if;
-         else
-            if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aColor ) ) then
-               case ModelLayer.FigureType'( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aType ) is
-                  when ModelLayer.FigureType'( ModelLayer.Pawn ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_pawn.png");
-                  when ModelLayer.FigureType'( ModelLayer.Knight ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_knight.png");
-                  when ModelLayer.FigureType'( ModelLayer.Bishop ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_bishop.png");
-                  when ModelLayer.FigureType'( ModelLayer.Rook ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_rook.png");
-                  when ModelLayer.FigureType'( ModelLayer.Queen ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_queen.png");
-                  when ModelLayer.FigureType'( ModelLayer.King ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_w_king.png");
-               end case;
-            else
-               case ModelLayer.FigureType'( aChessBoard.aGrid( aRowNo, aColNo ).aAccessFigure.all.aType ) is
-                  when ModelLayer.FigureType'( ModelLayer.Pawn ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_pawn.png");
-                  when ModelLayer.FigureType'( ModelLayer.Knight ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_knight.png");
-                  when ModelLayer.FigureType'( ModelLayer.Bishop ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_bishop.png");
-                  when ModelLayer.FigureType'( ModelLayer.Rook ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_rook.png");
-                  when ModelLayer.FigureType'( ModelLayer.Queen ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_queen.png");
-                  when ModelLayer.FigureType'( ModelLayer.King ) => aImage := Gtk.Image.Gtk_Image_New_From_File("images/b_b_king.png");
-               end case;
-            end if;
-         end if;
-      end if;
-      
+      aImage := Gtk.Image.Gtk_Image_New_From_File( Ada.Strings.Unbounded.To_String( aFilePath ) );
       Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
    end Update_Button;
    

@@ -40,7 +40,8 @@ package Callback_V2 is
                             Hbox : in out Gtk.Box.Gtk_Hbox;
                             Button1 : in out Gtk.Widget.Gtk_Widget; 
                             Button2 : in out Gtk.Widget.Gtk_Widget;
-                            Button3 : in out Gtk.Widget.Gtk_Widget );
+                            Button3 : in out Gtk.Widget.Gtk_Widget;
+                            Button4 : in out Gtk.Widget.Gtk_Widget );
    
 
    
