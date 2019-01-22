@@ -4,6 +4,7 @@ with Gtk.Main;
 with Gtk.Widget;
 with Gtk.Window;
 with Gtk.Button;
+with Gtk.Bin;
 with Ada.Text_IO; use Ada.Text_IO;
 
 package body ControllerLayer is
@@ -42,15 +43,15 @@ package body ControllerLayer is
    end SetPossibleToActivate;
    
    procedure Activate_Button( Object: access Gtk.Widget.Gtk_Widget_Record'Class; aPosition : ModelLayer.Position ) is
-      aSquare : ModelLayer.Square := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition );
-      aMainWindow : VisualLayer.MainWindow := aAllData.aMainWindow;
-      aChessBoard : ModelLayer.ChessBoard := aAllData.aChessBoard;
+      aYPosition : ModelLayer.AxisY := aPosition.aYPosition;
+      aXPosition : ModelLayer.AxisX := aPosition.aXPosition;
    begin
-      aSquare.isActivated := True;
-      VisualLayer.Update_Button( aRowNo      => aPosition.aYPosition,
-                                 aColNo      => aPosition.aXPosition,
-                                 aMainWindow => aMainWindow,
-                                 aChessBoard => aChessBoard );
+      aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isActivated := True;
+      VisualLayer.Update_Button( aRowNo      => aYPosition,
+                                 aColNo      => aXPosition,
+                                 aMainWindow => aAllData.aMainWindow,
+                                 aChessBoard => aAllData.aChessBoard );
+      aAllData.aMainWindow.aWindow.Show_All;
    end Activate_Button;
 
 end ControllerLayer;

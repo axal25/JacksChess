@@ -44,7 +44,7 @@ package body VisualLayer is
                            aAlignmentGrid => aMainWindow.aAlignmentGrid );
    end Initiate_MainWindow;
    
-   procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
+   procedure Initiate_ChessBoard( aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard ) is
    begin
       for row in aChessBoard.aGrid'Range(1) loop
          for col in aChessBoard.aGrid'Range(2) loop
@@ -53,18 +53,16 @@ package body VisualLayer is
       end loop;
    end Initiate_ChessBoard;
    
-   procedure Update_Button( aRowNo : ModelLayer.AxisY; aColNo : ModelLayer.AxisX; 
-                            aMainWindow : MainWindow; aChessBoard : ModelLayer.ChessBoard ) is
-      aButtonGrid : ButtonGrid := aMainWindow.aButtonGrid;
+   procedure Update_Button( aRowNo : in ModelLayer.AxisY; aColNo : in ModelLayer.AxisX; 
+                            aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard ) is
       row : AxisY := AxisY( aRowNo );
       col : AxisX := AxisX( aColNo );
-      aButton : Gtk.Button.Gtk_Button := aButtonGrid( row, col );
-      aChild : Gtk.Widget.Gtk_Widget := Gtk.Bin.Gtk_Bin( aButton ).Get_Child;
+      aChild : Gtk.Widget.Gtk_Widget := Gtk.Bin.Gtk_Bin( aMainWindow.aButtonGrid( row, col ) ).Get_Child;
       aImage : Gtk.Image.Gtk_Image;
       
       aFilePath : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String("images/");
    begin
-      Gtk.Bin.Gtk_Bin( aButton ).Remove( aChild );
+      Gtk.Bin.Gtk_Bin( aMainWindow.aButtonGrid( row, col ) ).Remove( aChild );
       
       if( ModelLayer.isWhite( aChessBoard.aGrid( aRowNo, aColNo ).aColor ) ) then
          aFilePath := aFilePath & "w_square";
@@ -100,7 +98,8 @@ package body VisualLayer is
       
       Ada.Text_IO.Put_Line( "[" & aRowNo'Img & ", " & aColNo'Img & " ] " & "aFilePath = " & Ada.Strings.Unbounded.To_String( aFilePath ) );
       aImage := Gtk.Image.Gtk_Image_New_From_File( Ada.Strings.Unbounded.To_String( aFilePath ) );
-      Gtk.Bin.Gtk_Bin( aButton ).Add( Widget => aImage );
+      
+      Gtk.Bin.Gtk_Bin( aMainWindow.aButtonGrid( row, col ) ).Add( Widget => aImage );
    end Update_Button;
    
    procedure Initiate_MainWindow( aWindow : in out Gtk.Window.Gtk_Window;
