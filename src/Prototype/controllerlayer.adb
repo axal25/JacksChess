@@ -106,11 +106,18 @@ package body ControllerLayer is
    end SetActive_aActivatedPosition;
    
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position ) is
+      aColor : ModelLayer.Color;
       aFigureType : ModelLayer.FigureType;
+      isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
+      tmpPosition : ModelLayer.Position := aPosition;
    begin
-      if( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken = True ) then
+      tmpPosition.aYPosition := tmpPosition.aYPosition +1;
+      tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) +1 );
+      Put_Line( ">> [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
+      if( isTaken = True ) then
          aFigureType := ModelLayer.FigureType'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType );
-         case ModelLayer.FigureType'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType ) is
+         aColor := ModelLayer.Color'( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
+         case aFigureType is
             when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
             when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
             when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
