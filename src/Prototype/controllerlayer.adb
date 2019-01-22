@@ -12,6 +12,7 @@ package body ControllerLayer is
    aAllData : VisualLayer.AllData;
    aActivated_Position : ModelLayer.Position;
    isActivated : Boolean := False;
+   aPossibleMoves : PossibleMoves;
    
    procedure Main is 
    begin
@@ -62,6 +63,8 @@ package body ControllerLayer is
                                                    UserCallback_Position.To_Marshaller( Deactivate_Button_Call'Access ),
                                                    aPosition );
       aAllData.aMainWindow.aWindow.Show_All;
+      
+      FindPossibleMoves( aPosition );
    end Activate_Button;
    
    procedure Activate_Button_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aPosition : in ModelLayer.Position ) is
@@ -101,5 +104,20 @@ package body ControllerLayer is
       aActivated_Position := aPosition;
       isActivated := True;
    end SetActive_aActivatedPosition;
+   
+   procedure FindPossibleMoves( aPosition : in ModelLayer.Position ) is
+   begin
+      aPossibleMoves := newPossibleMoves( aPossibleMoves );
+      
+   end FindPossibleMoves;
+   
+   function newPossibleMoves( aPossibleMoves : in out PossibleMoves ) return PossibleMoves is
+   begin
+      aPossibleMoves.aDynamicTable := new TableOfPositions(1..10);
+      aPossibleMoves.First := 1;
+      aPossibleMoves.Last := 10;
+      
+      return aPossibleMoves;
+   end newPossibleMoves;
 
 end ControllerLayer;
