@@ -283,7 +283,7 @@ package body ControllerLayer is
    begin
       --       -----------------------------
       --       	if(col>2)
-      --row :=3;
+      row :=3;
       if(ModelLayer.AxisX_to_Integer( col )>2) then
          tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
          if(row>1) then
@@ -388,36 +388,34 @@ package body ControllerLayer is
 
    begin
       for i in Integer range 1..8 loop
-         if(Integer(row)>i) then
-            if(ModelLayer.AxisX_to_Integer( col )<i) then
-               null;
-               end if;
-            null;
-            end if;
-         end loop;
---        i:=1;
---        if(row>i) then --and (ModelLayer.AxisX_to_Integer( col>i)) then
---           tmp_row := row -i;
---           tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
---           if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
---              Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
---              aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
---                                                    aY                  => tmp_row,
---                                                    ax                  => tmp_col);
---           else
---              if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor /= aColor) then
---                 Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
---                 aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
---                                                       aY                  => tmp_row,
---                                                       ax                  => tmp_col);
---                 --              exit;
---              else
---                 --              exit;
---                 null;
---              end if; 
---           end if;
---        end if;
---       
+         if(Integer(row)>i) and (ModelLayer.AxisX_to_Integer( col )<i) then
+            tmp_row := row - ModelLayer.AxisY(i);
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
+         end if;
+      end loop;
+      --        i:=1;
+      --        if(row>i) then --and (ModelLayer.AxisX_to_Integer( col>i)) then
+      --           tmp_row := row -i;
+      --           tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
+      --           if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
+      --              Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+      --              aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+      --                                                    aY                  => tmp_row,
+      --                                                    ax                  => tmp_col);
+      --           else
+      --              if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor /= aColor) then
+      --                 Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+      --                 aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+      --                                                       aY                  => tmp_row,
+      --                                                       ax                  => tmp_col);
+      --                 --              exit;
+      --              else
+      --                 --              exit;
+      --                 null;
+      --              end if; 
+      --           end if;
+      --        end if;
+      --       
   
       --  end loop;
       
