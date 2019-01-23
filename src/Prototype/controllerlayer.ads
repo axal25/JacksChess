@@ -8,7 +8,7 @@ package ControllerLayer is
    type TableOfPositions is array (NaturalAndZero range <>) of ModelLayer.Position;
    type DynamicTableOfPositions is access all TableOfPositions;
    type PossibleMoves is record
-      aDynamicTable : DynamicTableOfPositions;
+      aDynamicTable : DynamicTableOfPositions := null;
       First : NaturalAndZero := 0;
       Last : NaturalAndZero := 0;
    end record;
