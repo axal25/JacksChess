@@ -127,6 +127,7 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
                FindPossibleMovesKnight(aPosition => aPosition);
             when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
+               FindPossibleMovesBishop(aPosition => aPosition);
             when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
             when ModelLayer.FigureType'( ModelLayer.Queen ) => Put_Line( "_queen" );
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
@@ -282,7 +283,7 @@ package body ControllerLayer is
    begin
       --       -----------------------------
       --       	if(col>2)
-      -- row :=3;
+      --row :=3;
       if(ModelLayer.AxisX_to_Integer( col )>2) then
          tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
          if(row>1) then
@@ -372,7 +373,55 @@ package body ControllerLayer is
       end if;   		
           
    end FindPossibleMovesKnight;   
+   
+         
+   procedure FindPossibleMovesBishop( aPosition : in ModelLayer.Position ) is
+      tmp_Color : ModelLayer.Color := Black;
+      aColor : ModelLayer.Color := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.aColor;
+      --   aFigureType : ModelLayer.FigureType;
+      isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
+      tmpPosition : ModelLayer.Position := aPosition;
+      row : ModelLayer.AxisY := aPosition.aYPosition;
+      col : ModelLayer.AxisX := aPosition.aXPosition;
+      tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
+      tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
+
+   begin
+      for i in Integer range 1..8 loop
+         if(Integer(row)>i) then
+            if(ModelLayer.AxisX_to_Integer( col )<i) then
+               null;
+               end if;
+            null;
+            end if;
+         end loop;
+--        i:=1;
+--        if(row>i) then --and (ModelLayer.AxisX_to_Integer( col>i)) then
+--           tmp_row := row -i;
+--           tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
+--           if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
+--              Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+--              aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+--                                                    aY                  => tmp_row,
+--                                                    ax                  => tmp_col);
+--           else
+--              if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor /= aColor) then
+--                 Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+--                 aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+--                                                       aY                  => tmp_row,
+--                                                       ax                  => tmp_col);
+--                 --              exit;
+--              else
+--                 --              exit;
+--                 null;
+--              end if; 
+--           end if;
+--        end if;
+--       
   
+      --  end loop;
+      
+   end FindPossibleMovesBishop;
    
    function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
       result : Boolean := false;
