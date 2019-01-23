@@ -125,6 +125,7 @@ package body ControllerLayer is
             when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
                FindPossibleMovesPawn(aPosition => aPosition);
             when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
+               FindPossibleMovesKnight(aPosition => aPosition);
             when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
             when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
             when ModelLayer.FigureType'( ModelLayer.Queen ) => Put_Line( "_queen" );
@@ -132,88 +133,211 @@ package body ControllerLayer is
          end case;
          -- aPossibleMoves := newPossibleMoves( aPossibleMoves, 10 );
          -- aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition );
-         aPossibleMoves := newPossibleMoves( aPossibleMoves , 0 );
-         declare
-            aPosition1, aPosition2, aPosition3, aPosition4, aPosition5, aPosition6, aPosition7 : ModelLayer.Position;
-         begin
-            aPosition1.aYPosition := ModelLayer.AxisY( 1 );     aPosition1.aXPosition := ModelLayer.A;
-            aPosition2.aYPosition := ModelLayer.AxisY( 2 );     aPosition2.aXPosition := ModelLayer.B;
-            aPosition3.aYPosition := ModelLayer.AxisY( 3 );     aPosition3.aXPosition := ModelLayer.C;
-            aPosition4.aYPosition := ModelLayer.AxisY( 4 );     aPosition4.aXPosition := ModelLayer.D;
-            aPosition5.aYPosition := ModelLayer.AxisY( 5 );     aPosition5.aXPosition := ModelLayer.E;
-            aPosition6.aYPosition := ModelLayer.AxisY( 6 );     aPosition6.aXPosition := ModelLayer.F;
-            aPosition7.aYPosition := ModelLayer.AxisY( 7 );     aPosition7.aXPosition := ModelLayer.G;
-            
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition1 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition2 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition3 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition4 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition5 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition6 );
-            aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition7 );
-         end;
+         --           aPossibleMoves := newPossibleMoves( aPossibleMoves , 0 );
+         --           declare
+         --              aPosition1, aPosition2, aPosition3, aPosition4, aPosition5, aPosition6, aPosition7 : ModelLayer.Position;
+         --           begin
+         --              aPosition1.aYPosition := ModelLayer.AxisY( 1 );     aPosition1.aXPosition := ModelLayer.A;
+         --              aPosition2.aYPosition := ModelLayer.AxisY( 2 );     aPosition2.aXPosition := ModelLayer.B;
+         --              aPosition3.aYPosition := ModelLayer.AxisY( 3 );     aPosition3.aXPosition := ModelLayer.C;
+         --              aPosition4.aYPosition := ModelLayer.AxisY( 4 );     aPosition4.aXPosition := ModelLayer.D;
+         --              aPosition5.aYPosition := ModelLayer.AxisY( 5 );     aPosition5.aXPosition := ModelLayer.E;
+         --              aPosition6.aYPosition := ModelLayer.AxisY( 6 );     aPosition6.aXPosition := ModelLayer.F;
+         --              aPosition7.aYPosition := ModelLayer.AxisY( 7 );     aPosition7.aXPosition := ModelLayer.G;
+         --              
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition1 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition2 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition3 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition4 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition5 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition6 );
+         --              aPossibleMoves := appendPossibleMoves( aPossibleMoves, aPosition7 );
+         --           end;
          Put_Line( "FindPossibleMoves: " & PossibleMovesToString( aPossibleMoves ) );
       end if;
       
    end FindPossibleMoves;
    
    procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position ) is
-      aColor : ModelLayer.Color;
-      aFigureType : ModelLayer.FigureType;
+      aColor : ModelLayer.Color := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.aColor;
       isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
       --tmpPosition : ModelLayer.Position := aPosition;
       row : ModelLayer.AxisY := aPosition.aYPosition;
       col : ModelLayer.AxisX := aPosition.aXPosition;
       tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
+      aReturnPosition : Position;
    begin
-      --    if(white)
-      row := 3;
+      aReturnPosition.aYPosition := 1;
+      aReturnPosition.aXPosition := ModelLayer.A;
+      aPossibleMoves := appendPossibleMoves( outterPossibleMoves => aPossibleMoves,
+                                             newPosition         => aReturnPosition );
+      -----BIALE FIGURY
       if(aColor = White) then
-         --     if(row<1)
-                 
+         Put_Line( ">> sprawdzam" );    
          if(row > 1) then
             tmp_row := row -1;
-
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               if(row = 7) then
+                  tmp_col := col;  
+                  tmp_row := 5;
+                  if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
+                     Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  end if;     
+               end if;
             end if; 
-            if( ModelLayer.AxisX_to_Integer( col )>1) then
-               tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col ) -1 );
-               if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aColor = Black) then
+         end if;
+         if( ModelLayer.AxisX_to_Integer( col )>1) then
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-1) ;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
+               if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = Black) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
                end if;
             end if;
+         end if;
             
-            if( ModelLayer.AxisX_to_Integer( col )<8) then
-               tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col ) +1 );
-               --Put_Line( ">> ATTACK POSMOVE ["tmp_col'Img & "]" );
-               if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) and (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aColor = Black) then
+         if( ModelLayer.AxisX_to_Integer( col )<8) then
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+1) ;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True)then
+               if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = Black) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
                end if;
-            end if;     
-         end if;  
-         if(row = 7) then
-            tmp_col := col;  
-            tmp_row := 5;
-            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
+            end if;
+         end if;     
+      end if;  
+        
+      -----CZARNE FIGURY
+      if(aColor = Black) then
+         Put_Line( ">> sprawdzam" );    
+         if(row < 8) then
+            tmp_row := row +1;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
-            end if;     
+               if(row = 2) then
+                  tmp_col := col;  
+                  tmp_row := 4;
+                  if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
+                     Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  end if;     
+               end if;
+            end if; 
+         end if;
+         if( ModelLayer.AxisX_to_Integer( col )>1) then
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-1) ;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
+               if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = White) then
+                  Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               end if;
+            end if;
+         end if;
+            
+         if( ModelLayer.AxisX_to_Integer( col )<8) then
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+1) ;
+            if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
+               if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = White) then
+                  Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               end if;
+            end if;
+         end if;     
+      end if;  
+
+          
+   end FindPossibleMovesPawn;   
+      
+   procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position ) is
+      tmp_Color : ModelLayer.Color := Black;
+      aColor : ModelLayer.Color := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.aColor;
+   --   aFigureType : ModelLayer.FigureType;
+      isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
+      tmpPosition : ModelLayer.Position := aPosition;
+      row : ModelLayer.AxisY := aPosition.aYPosition;
+      col : ModelLayer.AxisX := aPosition.aXPosition;
+      tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
+      tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
+   begin
+      --       -----------------------------
+      --       	if(col>2)
+      -- row :=3;
+      if(ModelLayer.AxisX_to_Integer( col )>2) then
+         tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
+         if(row>1) then
+            tmp_row := row -1;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+         if(row<8) then
+            tmp_row := row +1;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+      end if;   
+      -------------
+      if(ModelLayer.AxisX_to_Integer( col )>1) then
+         tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-1);
+         if(row>2) then
+            tmp_row := row -2;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+         if(row<7) then
+            tmp_row := row +2;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+      end if;   
+      ------------
+      if(ModelLayer.AxisX_to_Integer( col )<7) then
+         tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+2);
+         if(row>1) then
+            tmp_row := row -1;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+         if(row<8) then
+            tmp_row := row +1;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+      end if;   
+      -------------
+      if(ModelLayer.AxisX_to_Integer( col )<8) then
+         tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+1);
+         if(row>2) then
+            tmp_row := row -2;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+         if(row<7) then
+            tmp_row := row +2;
+            if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
+               Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            end if;
+         end if;
+      end if;   		
+          
+   end FindPossibleMovesKnight;   
+  
+   
+   function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
+      result : Boolean := false;
+   begin
+      if(aAllData.aChessBoard.aGrid( row, col ).isTaken = False) then
+         result := true;
+      else
+         if (aAllData.aChessBoard.aGrid( row, col  ).aAccessFigure.aColor /= aColor) then  
+            result := true;
          end if;
       end if;
-         
-      --     if(col, row-1).isEmpty	
-      --      possiblemoves.add(col,row-1)		
-      --     if( row=7) & (col, row-2).isEmpty	
-      --       possiblemoves.add(col,row-2)	
-      --       attack	
-      --     if(col-1, row-1).isBlackFigure		
-      --       possiblemoves.add(col-1, row-1)		
-      --     if(col+1, row-1).isBlackFigure	
-      --       possiblemoves.add(col+1, row-1)	
-           
-               
-   end FindPossibleMovesPawn;
+      return result;
+   end isEnemyOrEmpty;
 
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in NaturalAndZero ) return PossibleMoves is
       aNewPossibleMoves : PossibleMoves;
