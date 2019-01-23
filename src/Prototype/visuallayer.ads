@@ -40,7 +40,6 @@ package VisualLayer is
                            aMainWindow : in out MainWindow; aChessBoard : in out ModelLayer.ChessBoard );
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
-   procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
    
    function AxisY_For_Print( aY : in AxisY ) return AxisY;
    

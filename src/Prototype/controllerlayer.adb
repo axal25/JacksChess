@@ -1,5 +1,6 @@
 with VisualLayer; use VisualLayer;
 with ModelLayer; use ModelLayer;
+with GameTurn; use GameTurn;
 with Gtk.Main;
 with Gtk.Widget;
 with Gtk.Window;
@@ -14,15 +15,28 @@ package body ControllerLayer is
    aActivated_Position : ModelLayer.Position;
    isActivated : Boolean := False;
    aPossibleMoves : PossibleMoves;
+   task_GT : GameTurn.GameTurnMain;
+   aTurn : GameTurn.Turn;
    
    procedure Main is 
    begin
-      aAllData := VisualLayer.Main;
+      aAllData := VisualLayer.Main;         
+      aAllData.aMainWindow.aWindow.On_Destroy( DestroyObject_And_MainQuit'Access );
+      Put_Line( "here?" );
+      Setup_Task_GameTurn;
       SetPossibleToActivate;
-        
       aAllData.aMainWindow.aWindow.Show_All;
       Gtk.Main.Main;
    end Main;
+   
+   procedure Setup_Task_GameTurn is
+   begin
+      task_GT.Start_the_Game;
+      task_GT.Get_Turn( aTurn );
+      task_GT.End_Turn( aTurn );
+      Put_Line( "--------------" );
+      task_GT.End_Turn( aTurn );
+   end;
    
    procedure SetPossibleToActivate is
       aAliveFigures : ModelLayer.AliveFigures := aAllData.aChessBoard.aAliveFigures;      
@@ -30,7 +44,15 @@ package body ControllerLayer is
       aButton : Gtk.Button.Gtk_Button;
       IdPosition : Gtk.Handlers.Handler_Id;
    begin
-      for row in aAliveFigures.First(1) .. aAliveFigures.Last(1) loop
+      declare
+         row : Integer;
+      begin
+         task_GT.Get_Turn( aTurn );
+         if( aTurn = GameTurn.Player ) then
+            row := 1;
+         else
+            row := 2;
+         end if;
          for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
             aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
             aButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
@@ -42,7 +64,7 @@ package body ControllerLayer is
             
             Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to SetPossibleToActivate " ); 
          end loop;
-      end loop;
+      end;
    end SetPossibleToActivate;
    
    procedure Activate_Button( aPosition : in ModelLayer.Position ) is
@@ -670,7 +692,7 @@ package body ControllerLayer is
       aFromPosition : ModelLayer.Position;
    begin
       Put_Line("#1 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
-              aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
+                 aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
       if( isActivated = True ) then
          aFromPosition := aActivated_Position;
          
@@ -687,5 +709,14 @@ package body ControllerLayer is
       Put_Line("#2 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
                  aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
    end Move_Figure;
+   
+   procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
+      -- close main window if Delete_Event return False (it means it's allowed to close);
+   begin
+      Ada.Text_IO.Put_Line( "X clicked - Destroying object" );
+      Gtk.Widget.Destroy( Object );
+      Gtk.Main.Main_Quit;
+      task_GT.End_of_the_Game;
+   end DestroyObject_And_MainQuit;
 
 end ControllerLayer;
