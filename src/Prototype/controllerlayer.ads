@@ -18,6 +18,7 @@ package ControllerLayer is
                                  aY : ModelLayer.AxisY; ax : ModelLayer.AxisX )
                                 return PossibleMoves;
    function removePossibleMoves( outterPossibleMoves : in out PossibleMoves; aPosition : in ModelLayer.Position ) return PossibleMoves;
+   function isPossibleMovesEmpty( outterPossibleMoves : in out PossibleMoves ) return Boolean;
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String;
 
    procedure ShowPossibleMoves;

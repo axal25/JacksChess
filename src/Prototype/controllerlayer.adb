@@ -283,7 +283,7 @@ package body ControllerLayer is
    begin
       --       -----------------------------
       --       	if(col>2)
-      row :=3;
+
       if(ModelLayer.AxisX_to_Integer( col )>2) then
          tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
          if(row>1) then
@@ -506,8 +506,8 @@ package body ControllerLayer is
             else
                J := aNewPossibleMoves.First;
                for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
-                  if( outterPossibleMoves.aDynamicTable( I ).aYPosition /= aPosition.aYPosition and
-                       outterPossibleMoves.aDynamicTable( I ).aXPosition /= aPosition.aXPosition ) then
+                  if( outterPossibleMoves.aDynamicTable( I ).aYPosition = aPosition.aYPosition and
+                       outterPossibleMoves.aDynamicTable( I ).aXPosition = aPosition.aXPosition ) then
                      null; -- do nothing
                   else
                      aNewPossibleMoves.aDynamicTable( J ) := outterPossibleMoves.aDynamicTable( I );
@@ -523,10 +523,24 @@ package body ControllerLayer is
       return outterPossibleMoves;
    end removePossibleMoves;
    
+   function isPossibleMovesEmpty( outterPossibleMoves : in out PossibleMoves ) return Boolean is
+      isEmpty : Boolean := False;
+   begin
+      if( outterPossibleMoves.First = outterPossibleMoves.Last and
+           outterPossibleMoves.Last = 0 and
+             outterPossibleMoves.aDynamicTable = null ) then
+         isEmpty := True;
+      else
+         isEmpty := False;
+      end if;
+      
+      return isEmpty;
+   end;
+   
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String is
       aDynString : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String("[ ");
    begin
-      if( outterPossibleMoves.Last = 0 and outterPossibleMoves.First = 0 and outterPossibleMoves.aDynamicTable = null ) then
+      if( isPossibleMovesEmpty( outterPossibleMoves ) = True ) then
          null; -- do nothing
       else
          if( outterPossibleMoves.First = outterPossibleMoves.Last ) then
@@ -585,13 +599,13 @@ package body ControllerLayer is
    
    procedure HidePossibleMoves is
    begin
-      if( aPossibleMoves.Last = 0 ) then
+      if( isPossibleMovesEmpty( aPossibleMoves ) ) then
          null; --do nothing
       else
          if( aPossibleMoves.First = aPossibleMoves.Last ) then
             HidePossibleMove( aPossibleMoves.aDynamicTable( aPossibleMoves.Last ) );
          else
-            while( aPossibleMoves.Last /= aPossibleMoves.Last or aPossibleMoves.Last /= 0 or aPossibleMoves.aDynamicTable /= null ) loop
+            while( isPossibleMovesEmpty( aPossibleMoves ) = False ) loop
                HidePossibleMove( aPossibleMoves.aDynamicTable( aPossibleMoves.Last ) );
             end loop;
          end if;
