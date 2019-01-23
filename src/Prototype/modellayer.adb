@@ -277,10 +277,44 @@ package body ModelLayer is
          for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
             if( ( aAliveFigures.aDynamicTable( row, col ).aPosition = aPosition ) and ( aAliveFigures.aDynamicTable( row, col ).isAlive = True ) ) then
                aAliveFigures.aDynamicTable( row, col ).isAlive := False;
+               -- aAliveFigures.aDynamicTable( row, col ) := Set_isAlive( aAliveFigures.aDynamicTable( row, col ), False );
             end if;
          end loop;
       end loop;
       return aAliveFigures;
    end;
+   
+--     function Set_Position( aAccessFigure : in out AccessFigure; aPosition : Position ) return AccessFigure is
+--       aNewFigure : Figure;
+--     begin
+--        aNewFigure.aType := aAccessFigure.all.aType;
+--        aNewFigure.aColor := aAccessFigure.all.aColor;
+--        aNewFigure.isAlive := aAccessFigure.all.isAlive;
+--        aNewFigure.aPosition := aPosition;
+--        aAccessFigure.all := aNewFigure;
+--        return aAccessFigure;
+--     end Set_Position;
+--     
+--     function Set_isAlive( aAccessFigure : in out AccessFigure; aIsAlive : Boolean ) return AccessFigure is
+--       aNewFigure : Figure;
+--     begin
+--        aNewFigure.aType := aAccessFigure.all.aType;
+--        aNewFigure.aColor := aAccessFigure.all.aColor;
+--        aNewFigure.aPosition := aAccessFigure.all.aPosition;
+--        aNewFigure.isAlive := aIsAlive;
+--        aAccessFigure.all := aNewFigure;
+--        return aAccessFigure;
+--     end Set_isAlive;
+--     
+--     function Set_isAlive( aFigure : in out Figure; aIsAlive : Boolean ) return Figure is
+--       aNewFigure : Figure;
+--     begin
+--        aNewFigure.aType := aFigure.aType;
+--        aNewFigure.aColor := aFigure.aColor;
+--        aNewFigure.aPosition := aFigure.aPosition;
+--        aNewFigure.isAlive := aIsAlive;
+--        aFigure := aNewFigure;
+--        return aFigure;
+--     end Set_isAlive;
 
 end ModelLayer;

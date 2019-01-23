@@ -76,7 +76,6 @@ package body ControllerLayer is
          Deactivate_Button;
       end if;
       SetActive_aActivatedPosition( aPosition );
-      aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isActivated := True;
       VisualLayer.Renew_Button( aRowNo      => aPosition.aYPosition,
                                 aColNo      => aPosition.aXPosition,
                                 aMainWindow => aAllData.aMainWindow,
@@ -126,6 +125,7 @@ package body ControllerLayer is
                                      
    procedure SetActive_aActivatedPosition( aPosition : in ModelLayer.Position ) is
    begin
+      aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isActivated := True;
       aActivated_Position := aPosition;
       isActivated := True;
    end SetActive_aActivatedPosition;
@@ -832,6 +832,7 @@ package body ControllerLayer is
    
    procedure HidePossibleMove( aPosition : in out ModelLayer.Position ) is
       IdPosition : Gtk.Handlers.Handler_Id;
+      isColorMatchingTurn : Boolean := False;
    begin
       aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isPossibleMove := False;
       VisualLayer.Renew_Button( aRowNo      => aPosition.aYPosition,
@@ -839,11 +840,21 @@ package body ControllerLayer is
                                 aMainWindow => aAllData.aMainWindow,
                                 aChessBoard => aAllData.aChessBoard );
       if( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken = True ) then
-         IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
-                                                      "clicked", 
-                                                      UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
-                                                      aPosition );
+         task_GT.Get_Turn( aTurn );
+         Put_Line( "aTurn = " & aTurn'Img );
+         if( aTurn = GameTurn.Player ) then
+            isColorMatchingTurn := ModelLayer.isWhite( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
+         else
+            isColorMatchingTurn := ModelLayer.isBlack( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
+         end if;
+         if( isColorMatchingTurn = True ) then
+            IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
+                                                         "clicked", 
+                                                         UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
+                                                         aPosition );
+         end if;
       end if;
+      
       aPossibleMoves := removePossibleMoves( outterPossibleMoves => aPossibleMoves,
                                              aPosition           => aPosition );
    end HidePossibleMove;
@@ -882,18 +893,36 @@ package body ControllerLayer is
       aAllData.aChessBoard.aAliveFigures := ModelLayer.Kill_Figure( aAllData.aChessBoard.aAliveFigures, aToPosition );
       
       -- Transfer data from FROM to TO
-      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
-      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
-        aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
-      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
-      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
+      -- aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure :=
+        aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure;
+      ChangeFigureSPostion( oldPosition => aFromPosition,
+                            newPosition => aToPosition );
       aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken := True;
       
       -- Free aFromPosition
       aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
       aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
+      
       return aAllData;
    end MoveFigureAndFreeInModel;
+   
+   procedure ChangeFigureSPostion( oldPosition : ModelLayer.Position; newPosition : ModelLayer.Position ) is
+      innerAliveFigures : AliveFigures := aAllData.aChessBoard.aAliveFigures;
+   begin
+      for row in innerAliveFigures.First(1) .. innerAliveFigures.Last(1) loop
+         for col in innerAliveFigures.First(2) .. innerAliveFigures.Last(2) loop
+            if( innerAliveFigures.aDynamicTable(row, col).isAlive = True
+               and innerAliveFigures.aDynamicTable(row, col).aPosition.aYPosition = oldPosition.aYPosition 
+               and innerAliveFigures.aDynamicTable(row, col).aPosition.aXPosition = oldPosition.aXPosition ) then
+               innerAliveFigures.aDynamicTable(row, col).aPosition := newPosition;
+            end if;
+         end loop;
+      end loop;
+      
+      aAllData.aChessBoard.aGrid( newPosition.aYPosition, newPosition.aXPosition ).aAccessFigure.all.aPosition := newPosition;
+      aAllData.aChessBoard.aAliveFigures := innerAliveFigures;
+   end ChangeFigureSPostion;
    
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
       -- close main window if Delete_Event return False (it means it's allowed to close);
