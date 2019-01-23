@@ -319,13 +319,11 @@ package body ControllerLayer is
       end if;   		
           
    end FindPossibleMovesKnight;   
+  
    
    function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
       result : Boolean := false;
    begin
-      
-      --       row : ModelLayer.AxisY := aPosition.aYPosition;
-      --   col : ModelLayer.AxisX := aPosition.aXPosition;
       if(aAllData.aChessBoard.aGrid( row, col ).isTaken = False) then
          result := true;
       else

@@ -15,6 +15,7 @@ package ControllerLayer is
    function newPossibleMoves( outterPossibleMoves : in out PossibleMoves; newSize : in NaturalAndZero ) return PossibleMoves;
    function appendPossibleMoves( outterPossibleMoves : in out PossibleMoves; newPosition : in ModelLayer.Position ) return PossibleMoves;
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String;
+   function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
 
    procedure SetDeactive_aActivatedPosition;
    procedure SetActive_aActivatedPosition( aPosition : in ModelLayer.Position );
@@ -31,5 +32,6 @@ package ControllerLayer is
 
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position );
+   procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position );
 
 end ControllerLayer;
