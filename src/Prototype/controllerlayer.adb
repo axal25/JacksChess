@@ -49,7 +49,7 @@ package body ControllerLayer is
       IdPosition : Gtk.Handlers.Handler_Id;
    begin
       if( isActivated = True ) then
-         Put_Line("[" & aPosition.aYPosition'Img & "," & aPosition.aXPosition'Img & "] vs. [" &
+         Put_Line("Activate_Button [" & aPosition.aYPosition'Img & "," & aPosition.aXPosition'Img & "] vs. [" &
                     aActivated_Position.aYPosition'Img & "," & aActivated_Position.aXPosition'Img & "]" );
          Deactivate_Button;
       end if;
@@ -616,18 +616,17 @@ package body ControllerLayer is
    end ShowPossibleMoves;
    
    procedure ShowPossibleMove( aPosition : in out ModelLayer.Position ) is
+      IdPosition : Gtk.Handlers.Handler_Id;
    begin
-      -- Put_Line( "ShowPossibleMove [ " & aPosition.aYPosition'Img & ", " & aPosition.aXPosition'Img & " ]" );
       aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isPossibleMove := True;
       VisualLayer.Renew_Button( aRowNo      => aPosition.aYPosition,
                                 aColNo      => aPosition.aXPosition,
                                 aMainWindow => aAllData.aMainWindow,
                                 aChessBoard => aAllData.aChessBoard );
-      
-      --        IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
-      --                                                     "clicked", 
-      --                                                     UserCallback_Position.To_Marshaller( Deactivate_Button_Call'Access ),
-      --                                                     aPosition );
+      IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
+                                                   "clicked", 
+                                                   UserCallback_Position.To_Marshaller( Move_Figure_Call'Access ),
+                                                   aPosition );
    end;
    
    procedure HidePossibleMoves is
@@ -662,5 +661,40 @@ package body ControllerLayer is
       aPossibleMoves := removePossibleMoves( outterPossibleMoves => aPossibleMoves,
                                              aPosition           => aPosition );
    end HidePossibleMove;
+   
+   procedure Move_Figure_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aToPosition : in ModelLayer.Position ) is
+   begin
+      Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
+      Move_Figure( aToPosition );
+      Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
+   end Move_Figure_Call;
+   
+   procedure Move_Figure( aToPosition : in ModelLayer.Position ) is
+      aFromPosition : ModelLayer.Position;
+   begin
+      Put_Line("#1 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
+              aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
+      if( isActivated = True ) then
+         aFromPosition := aActivated_Position;
+         
+         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
+         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
+           aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
+         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
+         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
+         aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
+         aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
+         
+         if( aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken = False ) then
+            aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken := True;
+         end if;
+         Deactivate_Button;
+         HidePossibleMoves;
+      else
+         null; -- do nothing
+      end if;
+      Put_Line("#2 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
+                 aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
+   end Move_Figure;
 
 end ControllerLayer;
