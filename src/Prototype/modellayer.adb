@@ -181,28 +181,17 @@ package body ModelLayer is
       end if;
    end isBlack;
    
-   procedure MoveFigure(  aFigure : in out Figure; 
-                          aFromSquare : in out Square; 
-                          aToSquare : in out Square ) is 
+   function MoveFigure( aFromPosition : in Position; aToPosition : in Position; aChessBoard : in out ChessBoard ) return ChessBoard is
    begin
-      aFromSquare.isActivated := False;
-      aToSquare.isActivated := False;
-      aToSquare.isPossibleMove := False;
-      -- posibleMoves( i ).isPossibleMove := False;
+      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
+      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
+        aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
+      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
+      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
+      aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
+      aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
       
-      if( aToSquare.isTaken = True ) then
-         null; --??
-      else
-         aToSquare.aAccessFigure := aFromSquare.aAccessFigure;
-      end if;
-      
-      declare -- NEED NEW POSITION (of aToSquare)
-         --           aNewPosition : Position := ??
-      begin
-         null;
-         -- aFigure.aPosition := ??
-         -- aAliveFigures ... .Position := ?
-      end;
+      return aChessBoard;
    end MoveFigure;
 
 end ModelLayer;

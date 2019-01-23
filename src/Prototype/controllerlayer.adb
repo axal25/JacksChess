@@ -674,13 +674,7 @@ package body ControllerLayer is
       if( isActivated = True ) then
          aFromPosition := aActivated_Position;
          
-         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
-         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
-           aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
-         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
-         aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
-         aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
-         aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
+         aAllData.aChessBoard := ModelLayer.MoveFigure( aFromPosition, aToPosition, aAllData.aChessBoard );
          
          if( aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken = False ) then
             aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken := True;
