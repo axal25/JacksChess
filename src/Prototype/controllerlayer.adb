@@ -373,6 +373,17 @@ package body ControllerLayer is
       return outterPossibleMoves;
    end appendPossibleMoves;
    
+   function appendPossibleMoves( outterPossibleMoves : in out PossibleMoves; 
+                                 aY : ModelLayer.AxisY; ax : ModelLayer.AxisX ) 
+                                return PossibleMoves is
+      newPosition : ModelLayer.Position;
+   begin
+      newPosition.aYPosition := aY;
+      newPosition.aXPosition := aX;
+      outterPossibleMoves := appendPossibleMoves( outterPossibleMoves, newPosition );
+      return outterPossibleMoves;
+   end appendPossibleMoves;
+   
    function removePossibleMoves( outterPossibleMoves : in out PossibleMoves; aPosition : in ModelLayer.Position ) return PossibleMoves is
       aNewPossibleMoves : PossibleMoves; 
       J : NaturalAndZero;

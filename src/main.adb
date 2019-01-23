@@ -20,6 +20,7 @@ procedure Main is
       Put_Line("▒▒▒█▄░░░░░▀█▄▄▄█▀▀▒▒▒▒▒▒");
       Put_Line("▒▒▒▒▀▀▀▀▀▀▀▒▒▒▒▒▒▒▒▒▒▒▒▒");
    end Spam;
+
 begin
    Spam;
    Put_Line("Da BIG Main - Start");
