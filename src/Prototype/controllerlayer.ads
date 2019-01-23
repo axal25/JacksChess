@@ -42,6 +42,7 @@ package ControllerLayer is
 
    procedure Move_Figure_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aToPosition : in ModelLayer.Position );
    procedure Move_Figure( aToPosition : in ModelLayer.Position );
+   function MoveFigureAndFreeInModel( aFromPosition : in ModelLayer.Position; aToPosition : in ModelLayer.Position; aAllData : in out VisualLayer.AllData ) return VisualLayer.AllData;
 
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position );

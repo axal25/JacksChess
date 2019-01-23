@@ -11,7 +11,7 @@ with Ada.Text_IO;
 with Gtk.Bin;
 with Gtk.Image;
 with Gtk.Container;
-with ModelLayer;
+with ModelLayer; use ModelLayer;
 
       
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;

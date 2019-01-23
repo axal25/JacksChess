@@ -1,4 +1,7 @@
-with Ada.Text_IO;
+with Ada.Text_IO; -- use Ada.Text_IO;
+with Ada.Characters.Latin_1;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Strings.Unbounded.Text_IO; use Ada.Strings.Unbounded.Text_IO;
 
 package body ModelLayer is
 
@@ -7,6 +10,18 @@ package body ModelLayer is
    begin
       aChessBoard.aAliveFigures := Init_aliveFigures( aChessBoard.aAliveFigures );
       aChessBoard.aGrid := Init_Grid( aChessBoard.aGrid, aChessBoard.aAliveFigures );
+      Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
+      Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
+--        declare
+--           aPosition : Position;
+--        begin
+--           aPosition.aYPosition := 1;
+--           aPosition.aXPosition := D;
+--           aChessBoard.aAliveFigures := Kill_Figure( aAliveFigures => aChessBoard.aAliveFigures,
+--                                                     aPosition     => aPosition );
+--           Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
+--           Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
+--        end;
       
       --        Ada.Text_IO.Put_Line(" aChessBoard.aAliveFigures /= null "); 
       --        if( aChessBoard.aAliveFigures.aDynamicTable /= null ) then
@@ -133,6 +148,69 @@ package body ModelLayer is
                                                          aAliveFigures.First(2) .. aAliveFigures.Last(2) );
       return aAliveFigures;
    end Init_Structure_AliveFigures;
+   
+   function isAliveFiguresEmpty( aAliveFigures : in AliveFigures ) return Boolean is
+      isEmpty : Boolean := False;
+   begin
+      if( aAliveFigures.First(1) = aAliveFigures.Last(1) and aAliveFigures.Last( 1 ) = 0 and aAliveFigures.aDynamicTable = null ) then
+         isEmpty := True;
+      else
+         isEmpty := False;
+      end if;
+      
+      return isEmpty;
+   end isAliveFiguresEmpty;
+   
+   function AliveFigures_To_String( aAliveFigures : in AliveFigures ) return String is
+      aDynString : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String("[ ");
+   begin
+      if( isAliveFiguresEmpty( aAliveFigures ) ) then
+         aDynString := aDynString & "[ ], [ ]";
+         null; -- do nothing
+      else
+         if( aAliveFigures.Last(2) = 0 ) then
+            aDynString := aDynString & "[ ], [ ]";
+            null; -- do nothing
+         else
+            if( aAliveFigures.First(1) = aAliveFigures.Last(1) ) then
+               aDynString := aDynString & "[ ";
+               if( aAliveFigures.First(2) = aAliveFigures.Last(2) ) then
+                  aDynString := aDynString & "[ {" & aAliveFigures.aDynamicTable( aAliveFigures.Last(1), aAliveFigures.Last(2) ).aPosition.aYPosition'Img & 
+                    "," & aAliveFigures.aDynamicTable( aAliveFigures.Last(1), aAliveFigures.Last(2) ).aPosition.aXPosition'Img & "} ]";
+               else
+                  aDynString := aDynString & "[";
+                  for row in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
+                     aDynString := aDynString & " {" & aAliveFigures.aDynamicTable( aAliveFigures.Last(1), row ).aPosition.aYPosition'Img & 
+                       "," & aAliveFigures.aDynamicTable( aAliveFigures.Last(1), row ).aPosition.aXPosition'Img & "} ";
+                  end loop;
+                  aDynString := aDynString & "]";
+               end if;
+               aDynString := aDynString & " ]";
+            else
+               for row in aAliveFigures.First(1) .. aAliveFigures.Last(1) loop
+                  aDynString := aDynString & "[";
+                  for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
+                     if( aAliveFigures.aDynamicTable( row, col ).isAlive = True ) then
+                        aDynString := aDynString & " {" & aAliveFigures.aDynamicTable( row, col ).aPosition.aYPosition'Img & 
+                          "," & aAliveFigures.aDynamicTable( row, col ).aPosition.aXPosition'Img & "} ";
+                     end if;
+                  end loop;
+                  aDynString := aDynString & "]";
+                  if( row = 1 ) then
+                     aDynString := aDynString & Ada.Characters.Latin_1.CR & Ada.Characters.Latin_1.LF;
+                  end if;
+               end loop;
+            end if;
+         end if;
+      end if;
+      
+      aDynString := aDynString & " ]";
+      declare
+         aString : String := Ada.Strings.Unbounded.To_String( aDynString );
+      begin
+         return aString;
+      end;
+   end AliveFigures_To_String;      
       
    -- type AxisX is ( A, B, C, D, E, F, G, H );
    function AxisX_to_Integer( aX : AxisX ) return Integer is
@@ -181,17 +259,28 @@ package body ModelLayer is
       end if;
    end isBlack;
    
-   function MoveFigure( aFromPosition : in Position; aToPosition : in Position; aChessBoard : in out ChessBoard ) return ChessBoard is
+   function Kill_Figure( aGrid : in out Grid; aPosition : in Position ) return Grid is
+      row : AxisY := aPosition.aYPosition;
+      col : AxisX := aPosition.aXPosition;
    begin
-      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
-      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
-        aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
-      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
-      aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
-      aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
-      aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
+      if( aGrid( row, col ).isTaken = True ) then
+         aGrid( row, col ).isTaken := False;
+         aGrid( row, col ).aAccessFigure := null;
+      end if;
       
-      return aChessBoard;
-   end MoveFigure;
+      return aGrid;
+   end;
+   
+   function Kill_Figure( aAliveFigures : in out AliveFigures; aPosition : in Position ) return AliveFigures is
+   begin
+      for row in aAliveFigures.First(1) .. aAliveFigures.Last(1) loop
+         for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
+            if( ( aAliveFigures.aDynamicTable( row, col ).aPosition = aPosition ) and ( aAliveFigures.aDynamicTable( row, col ).isAlive = True ) ) then
+               aAliveFigures.aDynamicTable( row, col ).isAlive := False;
+            end if;
+         end loop;
+      end loop;
+      return aAliveFigures;
+   end;
 
 end ModelLayer;

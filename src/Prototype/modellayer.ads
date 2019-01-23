@@ -12,6 +12,7 @@ package ModelLayer is
       aType : FigureType := Pawn;
       aColor : Color := White;
       aPosition : Position;
+      isAlive : Boolean := True;
    end record;
    
    type AccessFigure is access all Figure;
@@ -44,13 +45,16 @@ package ModelLayer is
    function Init_Structure_AliveFigures( First1 : Integer; Last1 : Integer; 
                                          First2 : Integer; Last2 : Integer ) 
                                         return AliveFigures;
+   function isAliveFiguresEmpty( aAliveFigures : in AliveFigures ) return Boolean;
+   function AliveFigures_To_String( aAliveFigures : in AliveFigures ) return String;
+   
+   function Kill_Figure( aAliveFigures : in out AliveFigures; aPosition : in Position ) return AliveFigures;
+   function Kill_Figure( aGrid : in out Grid; aPosition : in Position ) return Grid;
    
    function AxisX_to_Integer( aX : AxisX ) return Integer;
    function Integer_to_AxisX( aRowNo : Integer ) return AxisX;
    
    function isWhite( aColor : Color ) return Boolean;
    function isBlack( aColor : Color ) return Boolean;
-   
-   function MoveFigure( aFromPosition : in Position; aToPosition : in Position; aChessBoard : in out ChessBoard ) return ChessBoard;
 
 end ModelLayer;

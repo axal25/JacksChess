@@ -863,11 +863,10 @@ package body ControllerLayer is
       if( isActivated = True ) then
          aFromPosition := aActivated_Position;
          
-         aAllData.aChessBoard := ModelLayer.MoveFigure( aFromPosition, aToPosition, aAllData.aChessBoard );
+         aAllData := MoveFigureAndFreeInModel( aFromPosition => aFromPosition,
+                                               aToPosition => aToPosition, 
+                                               aAllData => aAllData );
          
-         if( aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken = False ) then
-            aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken := True;
-         end if;
          Deactivate_Button;
          HidePossibleMoves;
       else
@@ -876,6 +875,25 @@ package body ControllerLayer is
       Put_Line("#2 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
                  aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
    end Move_Figure;
+   
+   function MoveFigureAndFreeInModel( aFromPosition : in ModelLayer.Position; aToPosition : in ModelLayer.Position; aAllData : in out VisualLayer.AllData ) return VisualLayer.AllData is
+   begin
+      aAllData.aChessBoard.aGrid := ModelLayer.Kill_Figure( aAllData.aChessBoard.aGrid, aToPosition );
+      aAllData.aChessBoard.aAliveFigures := ModelLayer.Kill_Figure( aAllData.aChessBoard.aAliveFigures, aToPosition );
+      
+      -- Transfer data from FROM to TO
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure := new ModelLayer.Figure;
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all :=
+        aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure.all;
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aYPosition :=  aToPosition.aYPosition;
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).aAccessFigure.all.aPosition.aXPosition :=  aToPosition.aXPosition;
+      aAllData.aChessBoard.aGrid( aToPosition.aYPosition, aToPosition.aXPosition ).isTaken := True;
+      
+      -- Free aFromPosition
+      aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).aAccessFigure := null;
+      aAllData.aChessBoard.aGrid( aFromPosition.aYPosition, aFromPosition.aXPosition ).isTaken := False;
+      return aAllData;
+   end MoveFigureAndFreeInModel;
    
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
       -- close main window if Delete_Event return False (it means it's allowed to close);
