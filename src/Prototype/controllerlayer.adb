@@ -519,6 +519,7 @@ package body ControllerLayer is
       col : ModelLayer.AxisX := aPosition.aXPosition;
       tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
+      aKingDangerSquares : PossibleMoves;
 
    begin
 
@@ -612,8 +613,57 @@ package body ControllerLayer is
             end if;  
          end if; 
       end if;
+      aKingDangerSquares := kingDangerSquares(tmp_AllData => aAllData,
+                                              aColor       => aColor);
+     Put_Line( ">>DANGER" & String(PossibleMovesToString(outterPossibleMoves => aKingDangerSquares)));
       
    end FindPossibleMovesKing;
+   
+   function kingDangerSquares (tmp_AllData : in  VisualLayer.AllData; aColor :in  ModelLayer.Color) return PossibleMoves is
+      kingDangerSquares : PossibleMoves;
+      kingPosition : ModelLayer.Position;
+      tmpPosition : ModelLayer.Position;
+      copy_AllData : VisualLayer.AllData := tmp_AllData;
+      copy_AliveFigures : ModelLayer.AliveFigures := copy_AllData.aChessBoard.aAliveFigures;   
+      --row : Integer;
+      
+   begin
+--        if(aColor=White) then
+--           --szukam aktualnej pozycji krola
+--           row:=1;
+--           for col in copy_AliveFigures.First(2) .. copy_AliveFigures.Last(2) loop
+--              
+--              if(copy_AliveFigures.aDynamicTable( row, col ).aType = King) then
+--              kingPosition := copy_AliveFigures.aDynamicTable( row, col ).aPosition; 
+--              Put_Line( "BIALY KROL[" & kingPosition.aYPosition'Img & ", " & kingPosition.aXPosition'Img & " ] " );
+--              end if;  
+--           end loop;
+--           
+--           --ustawiam isTaken krola na copy_AllData na False
+--           copy_AllData.aChessBoard.aGrid( kingPosition.aYPosition, kingPosition.aXPosition ).isTaken := False;
+--           --szukam moves
+--           for col in copy_AliveFigures.First(2) .. copy_AliveFigures.Last(2) loop
+--              
+--              if(copy_AliveFigures.aDynamicTable( row, col ).isAlive = True) and (copy_AliveFigures.aDynamicTable( row, col ).aType /= King) then
+--              tmpPosition := copy_AliveFigures.aDynamicTable( row, col ).aPosition; 
+--              FindPossibleMoves(aPosition => tmpPosition );
+--  
+--              end if;  
+--           end loop;
+--           kingDangerSquares := aPossibleMoves;
+--           
+--             
+--           
+--        end if;
+--        if(aColor=Black) then
+--           row:=2;
+--           for col in copy_AliveFigures.First(2) .. copy_AliveFigures.Last(2) loop
+--              kingPosition := copy_AliveFigures.aDynamicTable( row, col ).aPosition; 
+--              Put_Line( "CZARNE[" & kingPosition.aYPosition'Img & ", " & kingPosition.aXPosition'Img & " ] " ); 
+--           end loop;
+--        end if;
+      return kingDangerSquares;
+   end kingDangerSquares;		
    
    function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
       result : Boolean := false;

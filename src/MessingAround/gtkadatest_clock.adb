@@ -66,11 +66,11 @@ package body GtkAdaTest_Clock is
       is
          Context   : Cairo_Context;
          Timestamp : Time;
-         X         : GInt;
-         Y         : GInt;
+         --X         : GInt;
+         --Y         : GInt;
          Width     : GInt;
          Height    : GInt;
-         Depth     : GInt;
+         --Depth     : GInt;
       begin
 
          Timestamp := Clock;

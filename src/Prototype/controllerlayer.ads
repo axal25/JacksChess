@@ -53,6 +53,7 @@ package ControllerLayer is
    procedure FindPossibleMovesRook( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesKing( aPosition : in ModelLayer.Position );
 
+   function kingDangerSquares (tmp_AllData : in  VisualLayer.AllData; aColor :in  ModelLayer.Color) return PossibleMoves;
    function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
    function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
 
