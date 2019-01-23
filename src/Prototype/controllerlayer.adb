@@ -168,10 +168,10 @@ package body ControllerLayer is
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
       aReturnPosition : Position;
    begin
-      aReturnPosition.aYPosition := 1;
-      aReturnPosition.aXPosition := ModelLayer.A;
-      aPossibleMoves := appendPossibleMoves( outterPossibleMoves => aPossibleMoves,
-                                             newPosition         => aReturnPosition );
+      --        aReturnPosition.aYPosition := 1;
+      --        aReturnPosition.aXPosition := ModelLayer.A;
+      --        aPossibleMoves := appendPossibleMoves( outterPossibleMoves => aPossibleMoves,
+      --                                               newPosition         => aReturnPosition );
       -----BIALE FIGURY
       if(aColor = White) then
          Put_Line( ">> sprawdzam" );    
@@ -179,11 +179,17 @@ package body ControllerLayer is
             tmp_row := row -1;
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
                if(row = 7) then
                   tmp_col := col;  
                   tmp_row := 5;
                   if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
                      Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                     aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                           aY                  => tmp_row,
+                                                           ax                  => tmp_col);
                   end if;     
                end if;
             end if; 
@@ -193,6 +199,9 @@ package body ControllerLayer is
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
                if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = Black) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                        aY                  => tmp_row,
+                                                        ax                  => tmp_col);
                end if;
             end if;
          end if;
@@ -202,6 +211,9 @@ package body ControllerLayer is
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True)then
                if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = Black) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                        aY                  => tmp_row,
+                                                        ax                  => tmp_col);
                end if;
             end if;
          end if;     
@@ -214,11 +226,17 @@ package body ControllerLayer is
             tmp_row := row +1;
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
                if(row = 2) then
                   tmp_col := col;  
                   tmp_row := 4;
                   if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col).isTaken = False) then
                      Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                     aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                           aY                  => tmp_row,
+                                                           ax                  => tmp_col);
                   end if;     
                end if;
             end if; 
@@ -228,6 +246,9 @@ package body ControllerLayer is
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
                if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = White) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                        aY                  => tmp_row,
+                                                        ax                  => tmp_col);
                end if;
             end if;
          end if;
@@ -237,6 +258,9 @@ package body ControllerLayer is
             if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = True) then
                if (aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor = White) then
                   Put_Line( ">> ATTACK POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+                  aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                        aY                  => tmp_row,
+                                                        ax                  => tmp_col);
                end if;
             end if;
          end if;     
@@ -248,7 +272,7 @@ package body ControllerLayer is
    procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position ) is
       tmp_Color : ModelLayer.Color := Black;
       aColor : ModelLayer.Color := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.aColor;
-   --   aFigureType : ModelLayer.FigureType;
+      --   aFigureType : ModelLayer.FigureType;
       isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
       tmpPosition : ModelLayer.Position := aPosition;
       row : ModelLayer.AxisY := aPosition.aYPosition;
@@ -265,12 +289,18 @@ package body ControllerLayer is
             tmp_row := row -1;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
          if(row<8) then
             tmp_row := row +1;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
       end if;   
@@ -281,12 +311,18 @@ package body ControllerLayer is
             tmp_row := row -2;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
          if(row<7) then
             tmp_row := row +2;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
       end if;   
@@ -297,12 +333,18 @@ package body ControllerLayer is
             tmp_row := row -1;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
          if(row<8) then
             tmp_row := row +1;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
       end if;   
@@ -313,12 +355,18 @@ package body ControllerLayer is
             tmp_row := row -2;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
          if(row<7) then
             tmp_row := row +2;
             if(isEnemyOrEmpty(tmp_row, tmp_col, aColor)) then
                Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+               aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                     aY                  => tmp_row,
+                                                     ax                  => tmp_col);
             end if;
          end if;
       end if;   		
@@ -430,20 +478,20 @@ package body ControllerLayer is
    begin
       if( outterPossibleMoves.Last = 0 ) then
          null; -- do nothing
-         else
-      if( outterPossibleMoves.First = outterPossibleMoves.Last ) then
-         aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aYPosition'Img & 
-           "," & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aXPosition'Img & "}";
       else
-         for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
-            if( I = outterPossibleMoves.First ) then
-               aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
-                 "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
-            else
-               aDynString := aDynString & " , {" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
-                 "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
-            end if;
-         end loop;
+         if( outterPossibleMoves.First = outterPossibleMoves.Last ) then
+            aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aYPosition'Img & 
+              "," & outterPossibleMoves.aDynamicTable( outterPossibleMoves.First ).aXPosition'Img & "}";
+         else
+            for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
+               if( I = outterPossibleMoves.First ) then
+                  aDynString := aDynString & "{" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
+                    "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
+               else
+                  aDynString := aDynString & " , {" & outterPossibleMoves.aDynamicTable( I ).aYPosition'Img & 
+                    "," & outterPossibleMoves.aDynamicTable( I ).aXPosition'Img & "}";
+               end if;
+            end loop;
          end if;
       end if;
          

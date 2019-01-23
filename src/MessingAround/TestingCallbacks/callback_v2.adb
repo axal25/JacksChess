@@ -250,7 +250,7 @@ package body Callback_V2 is
          --             Gtk.Style_Provider."+"(Button3_CssProvider);
          --           Button3_StyleProvider00 : Gtk.Style_Provider.Gtk_Style_Provider := 
          --             Button3_CssProvider;
-         Button3_StyleProvider : Gtk.Style_Provider.Gtk_Style_Provider;
+     --    Button3_StyleProvider : Gtk.Style_Provider.Gtk_Style_Provider;
          --           Button3_StyleProvider2 : Gtk.Style_Provider.Gtk_Style_Provider := 
          --             Gtk.Style_Provider.Gtk_Style_Provider( Gtk.Css_Provider.Gtk_Css_Provider_New );
          --           Button3_StyleProvider3 : Gtk.Style_Provider.Gtk_Style_Provider := 
