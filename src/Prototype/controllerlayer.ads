@@ -40,6 +40,9 @@ package ControllerLayer is
    procedure Deactivate_Button;
    procedure Deactivate_Button_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aPosition : in ModelLayer.Position );
 
+   procedure Move_Figure_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aToPosition : in ModelLayer.Position );
+   procedure Move_Figure( aToPosition : in ModelLayer.Position );
+
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position );
