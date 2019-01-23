@@ -51,8 +51,6 @@ package ModelLayer is
    function isWhite( aColor : Color ) return Boolean;
    function isBlack( aColor : Color ) return Boolean;
    
-   procedure MoveFigure(  aFigure : in out Figure; 
-                          aFromSquare : in out Square; 
-                          aToSquare : in out Square );
+   function MoveFigure( aFromPosition : in Position; aToPosition : in Position; aChessBoard : in out ChessBoard ) return ChessBoard;
 
 end ModelLayer;

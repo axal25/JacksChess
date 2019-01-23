@@ -175,11 +175,7 @@ package body VisualLayer is
                            Top_Attach    => Glib.Guint( row ),
                            Bottom_Attach => Glib.Guint( row+1 ) );
          end loop;
-      end loop;
-         
-      aWindow.On_Destroy( DestroyObject_And_MainQuit'Access );
-
-      
+      end loop;     
       
       --        --  Using object_connect.
       --        --  The callback is automatically destroyed when button2 is destroyed, so
@@ -201,14 +197,6 @@ package body VisualLayer is
    begin
       return AxisX( ModelLayer.Integer_to_AxisX( aRowNo ) );
    end Integer_to_AxisX;
-   
-   procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class ) is --on event
-      -- close main window if Delete_Event return False (it means it's allowed to close);
-   begin
-      Ada.Text_IO.Put_Line( "X clicked - Destroying object" );
-      Gtk.Widget.Destroy( Object );
-      Gtk.Main.Main_Quit;
-   end DestroyObject_And_MainQuit;
    
    function AxisY_For_Print( aY : in AxisY ) return AxisY is
       aY_For_Print : AxisY := 9 - aY;
