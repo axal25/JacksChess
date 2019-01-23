@@ -281,10 +281,6 @@ package body ControllerLayer is
       tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
    begin
-      --       -----------------------------
-      --       	if(col>2)
-      row := 3;
-      tmp_row := row;
       if(ModelLayer.AxisX_to_Integer( col )>2) then
          tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
          if(row>1) then
