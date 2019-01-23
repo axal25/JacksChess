@@ -384,41 +384,72 @@ package body ControllerLayer is
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
 
    begin
+
       for i in Integer range 1..8 loop
-         if(Integer(row)>i) then
-            if(ModelLayer.AxisX_to_Integer( col )<i) then
-               null;
-               end if;
-            null;
+         --Put_Line( ">> check1 [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+         if(Integer(row)>i) and (ModelLayer.AxisX_to_Integer( col )>i) then
+            tmp_row := row - ModelLayer.AxisY(i);
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
+            if(FindPossibleMovesInLine(tmp_row => tmp_row,
+                                       tmp_col => tmp_col,
+                                       aColor  => aColor) = true) then
+               exit;
             end if;
-         end loop;
---        i:=1;
---        if(row>i) then --and (ModelLayer.AxisX_to_Integer( col>i)) then
---           tmp_row := row -i;
---           tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-i);
---           if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
---              Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
---              aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
---                                                    aY                  => tmp_row,
---                                                    ax                  => tmp_col);
---           else
---              if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor /= aColor) then
---                 Put_Line( ">> POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
---                 aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
---                                                       aY                  => tmp_row,
---                                                       ax                  => tmp_col);
---                 --              exit;
---              else
---                 --              exit;
---                 null;
---              end if; 
---           end if;
---        end if;
---       
-  
-      --  end loop;
+            
+         end if;
+      end loop;
+      for i in Integer range 1..8 loop
+         if(Integer(row)<9-i) and (ModelLayer.AxisX_to_Integer( col )<9-i) then
+            tmp_row := row + ModelLayer.AxisY(i);
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+i);
+            if(FindPossibleMovesInLine(tmp_row => tmp_row,
+                                       tmp_col => tmp_col,
+                                       aColor  => aColor) = true) then
+               exit;
+            end if;
+            
+         end if;
+      end loop;
+      for i in Integer range 1..8 loop
+         if(Integer(row)>i) and (ModelLayer.AxisX_to_Integer( col )<9-i) then
+            tmp_row := row - ModelLayer.AxisY(i);
+            tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )+i);
+            if(FindPossibleMovesInLine(tmp_row => tmp_row,
+                                       tmp_col => tmp_col,
+                                       aColor  => aColor) = true) then
+               exit;
+            end if;
+            
+         end if;
+      end loop;
+     
       
    end FindPossibleMovesBishop;
+   
+   function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
+      result : Boolean := false;
+   begin
+      if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).isTaken = False) then
+         Put_Line( ">> PUSTY POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+         aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                               aY                  => tmp_row,
+                                               ax                  => tmp_col);
+      else
+         if(aAllData.aChessBoard.aGrid( tmp_row, tmp_col ).aAccessFigure.aColor /= aColor) then
+            Put_Line( ">> ENEMY POSMOVE [" & tmp_row'Img & "," & tmp_col'Img & "]" );
+            aPossibleMoves := appendPossibleMoves(outterPossibleMoves => aPossibleMoves,
+                                                  aY                  => tmp_row,
+                                                  ax                  => tmp_col);
+                  
+            result := true;
+         else
+            Put_Line( ">> MY BRO" );
+            result := true;
+         end if;
+               
+      end if;
+      return result;
+   end FindPossibleMovesInLine;
    
    function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
       result : Boolean := false;
