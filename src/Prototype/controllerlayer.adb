@@ -444,7 +444,7 @@ package body ControllerLayer is
          aNewPossibleMoves.First := 1;
          aNewPossibleMoves.Last := newSize;
       else
-         aNewPossibleMoves.aDynamicTable := new TableOfPositions( 0..0 );
+         aNewPossibleMoves.aDynamicTable := null;
          aNewPossibleMoves.First := 0;
          aNewPossibleMoves.Last := 0;
       end if;
@@ -456,14 +456,17 @@ package body ControllerLayer is
       aNewPossibleMoves : PossibleMoves; 
    begin
       aNewPossibleMoves := newPossibleMoves( aNewPossibleMoves, outterPossibleMoves.Last +1 );
-      
-      if( aNewPossibleMoves.First = aNewPossibleMoves.Last ) then
-         aNewPossibleMoves.aDynamicTable( aNewPossibleMoves.First ) := newPosition;
+      if( aNewPossibleMoves.Last = 0 ) then
+         Put_Line( "nigdy?" );
       else
-         for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
-            aNewPossibleMoves.aDynamicTable( I ) := outterPossibleMoves.aDynamicTable( I );
-         end loop;
-         aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
+         if( aNewPossibleMoves.First = aNewPossibleMoves.Last ) then
+            aNewPossibleMoves.aDynamicTable( aNewPossibleMoves.First ) := newPosition;
+         else
+            for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
+               aNewPossibleMoves.aDynamicTable( I ) := outterPossibleMoves.aDynamicTable( I );
+            end loop;
+            aNewPossibleMoves.aDynamicTable( outterPossibleMoves.Last +1 ) := newPosition;
+         end if;
       end if;
       
       outterPossibleMoves := aNewPossibleMoves;
@@ -478,6 +481,7 @@ package body ControllerLayer is
       newPosition.aYPosition := aY;
       newPosition.aXPosition := aX;
       outterPossibleMoves := appendPossibleMoves( outterPossibleMoves, newPosition );
+      Put_Line( "append( ..., aY, aX) => " & PossibleMovesToString( aPossibleMoves ) );
       return outterPossibleMoves;
    end appendPossibleMoves;
    
@@ -486,20 +490,19 @@ package body ControllerLayer is
       J : NaturalAndZero;
    begin
       if( outterPossibleMoves.Last = 0 ) then
-         return outterPossibleMoves;
+         null; -- do nothing
       else
          aNewPossibleMoves := newPossibleMoves( aNewPossibleMoves, outterPossibleMoves.Last -1 );
          if( aNewPossibleMoves.Last = 0 ) then
-            outterPossibleMoves := aNewPossibleMoves;
-            return outterPossibleMoves;
+            null; -- do nothing
          else
             if( aNewPossibleMoves.First = aNewPossibleMoves.Last ) then
                for i in outterPossibleMoves.First .. outterPossibleMoves.Last loop
-                  if( outterPossibleMoves.aDynamicTable( I ).aYPosition /= aPosition.aYPosition and
-                       outterPossibleMoves.aDynamicTable( I ).aXPosition /= aPosition.aXPosition ) then
-                     aNewPossibleMoves.aDynamicTable( aNewPossibleMoves.First ) := outterPossibleMoves.aDynamicTable( I );
-                  else
+                  if( outterPossibleMoves.aDynamicTable( I ).aYPosition = aPosition.aYPosition and
+                       outterPossibleMoves.aDynamicTable( I ).aXPosition = aPosition.aXPosition ) then
                      null; -- do nothing
+                  else
+                     aNewPossibleMoves.aDynamicTable( aNewPossibleMoves.First ) := outterPossibleMoves.aDynamicTable( I );
                   end if;
                end loop;
             else
@@ -507,25 +510,25 @@ package body ControllerLayer is
                for I in outterPossibleMoves.First .. outterPossibleMoves.Last loop
                   if( outterPossibleMoves.aDynamicTable( I ).aYPosition /= aPosition.aYPosition and
                        outterPossibleMoves.aDynamicTable( I ).aXPosition /= aPosition.aXPosition ) then
+                     null; -- do nothing
+                  else
                      aNewPossibleMoves.aDynamicTable( J ) := outterPossibleMoves.aDynamicTable( I );
                      J := J + 1;
-                  else
-                     null; -- do nothing
                   end if;
                   exit when J > aNewPossibleMoves.Last;
                end loop;
             end if;
       
-            outterPossibleMoves := aNewPossibleMoves;
-            return outterPossibleMoves;
          end if;
+         outterPossibleMoves := aNewPossibleMoves;
       end if;
+      return outterPossibleMoves;
    end removePossibleMoves;
    
    function PossibleMovesToString( outterPossibleMoves : in out PossibleMoves ) return String is
       aDynString : Ada.Strings.Unbounded.Unbounded_String := Ada.Strings.Unbounded.To_Unbounded_String("[ ");
    begin
-      if( outterPossibleMoves.Last = 0 ) then
+      if( outterPossibleMoves.Last = 0 and outterPossibleMoves.First = 0 and outterPossibleMoves.aDynamicTable = null ) then
          null; -- do nothing
       else
          if( outterPossibleMoves.First = outterPossibleMoves.Last ) then
@@ -584,19 +587,17 @@ package body ControllerLayer is
    
    procedure HidePossibleMoves is
    begin
-      Put_Line( "#1# HidePossibleMoves: " & PossibleMovesToString( aPossibleMoves ) );
       if( aPossibleMoves.Last = 0 ) then
          null; --do nothing
       else
          if( aPossibleMoves.First = aPossibleMoves.Last ) then
             HidePossibleMove( aPossibleMoves.aDynamicTable( aPossibleMoves.Last ) );
          else
-            while( aPossibleMoves.Last /= 0 ) loop
-               HidePossibleMove( aPossibleMoves.aDynamicTable( aPossibleMoves.First ) );
+            while( aPossibleMoves.Last /= aPossibleMoves.Last or aPossibleMoves.Last /= 0 or aPossibleMoves.aDynamicTable /= null ) loop
+               HidePossibleMove( aPossibleMoves.aDynamicTable( aPossibleMoves.Last ) );
             end loop;
          end if;
       end if;
-      Put_Line( "#2# HidePossibleMoves: " & PossibleMovesToString( aPossibleMoves ) );
    end;
    
    procedure HidePossibleMove( aPosition : in out ModelLayer.Position ) is
