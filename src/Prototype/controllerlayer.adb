@@ -281,9 +281,7 @@ package body ControllerLayer is
       tmp_row : ModelLayer.AxisY := aPosition.aYPosition;
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
    begin
-      --       -----------------------------
-      --       	if(col>2)
-      --row:=3;
+
       if(ModelLayer.AxisX_to_Integer( col )>2) then
          tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( col )-2);
          if(row>1) then
@@ -387,7 +385,7 @@ package body ControllerLayer is
       tmp_col : ModelLayer.AxisX := aPosition.aXPosition;
 
    begin
-      row:=4; --TEST
+
       for i in Integer range 1..8 loop
          --Put_Line( ">> check1 [" & tmp_row'Img & "," & tmp_col'Img & "]" );
          if(Integer(row)>i) and (ModelLayer.AxisX_to_Integer( col )>i) then
