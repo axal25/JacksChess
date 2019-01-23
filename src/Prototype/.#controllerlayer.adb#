@@ -594,6 +594,8 @@ package body ControllerLayer is
       
    end FindPossibleMovesKing;
    
+   function 
+   
    function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean is
       result : Boolean := false;
    begin
