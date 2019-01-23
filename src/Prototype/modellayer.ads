@@ -27,7 +27,7 @@ package ModelLayer is
    type DynamicTableOfFigures is access all TableOfFigures;
    type IntegerArrayOf2 is array ( 1..2 ) of Integer;
    type AliveFigures is record
-      aDynamicTable : DynamicTableOfFigures;
+      aDynamicTable : DynamicTableOfFigures := null;
       First : IntegerArrayOf2 := (0,0);
       Last : IntegerArrayOf2 := (0,0);
    end record;
