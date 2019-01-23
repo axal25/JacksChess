@@ -45,6 +45,7 @@ package ControllerLayer is
    procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position );
    procedure FindPossibleMovesBishop( aPosition : in ModelLayer.Position );
 
+   function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
    function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
 
 end ControllerLayer;
