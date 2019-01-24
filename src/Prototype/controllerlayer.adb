@@ -770,6 +770,26 @@ package body ControllerLayer is
       return outterPossibleMoves;
    end appendPossibleMoves;
    
+   --< Usage: aEmptyPossibleMoves := concatenatePossibleMoves( aPossibleMoves1, aPossibleMoves2 );
+   function concatenatePossibleMoves( outterPossibleMoves1 : in PossibleMoves, 
+                                      outterPossibleMoves2 : in PossibleMoves  ) 
+                                     return PossibleMoves is
+      aNewPossibleMoves : PossibleMoves;
+   begin
+      for I in outterPossibleMoves1.First .. outterPossibleMoves1.Last loop
+         appendPossibleMoves( aNewPossibleMoves, 
+                              outterPossibleMoves1.aDynamicTable( I ).aYPosition, 
+                              outterPossibleMoves1.aDynamicTable( I ).aXPosition );
+      end loop;
+      for I in outterPossibleMoves2.First .. outterPossibleMoves2.Last loop
+         appendPossibleMoves( aNewPossibleMoves, 
+                              outterPossibleMoves1.aDynamicTable( I ).aYPosition, 
+                              outterPossibleMoves1.aDynamicTable( I ).aXPosition );
+      end loop;
+      
+      return aNewPossibleMoves;
+   end concatenatePossibleMoves;
+   
    function removePossibleMoves( outterPossibleMoves : in out PossibleMoves; aPosition : in ModelLayer.Position ) return PossibleMoves is
       aNewPossibleMoves : PossibleMoves; 
       J : NaturalAndZero;
