@@ -1,4 +1,5 @@
 with Gtk.Button;
+with Ada.Numerics.Discrete_Random;
 
 package GameTurn is
 
@@ -7,7 +8,9 @@ package GameTurn is
    type DynamicTableOfButtons is access all TableOfButtons;
    function appendPossibleActivations( aPossibleActivations : in out DynamicTableOfButtons; aButton : in out Gtk.Button.Gtk_Button ) return DynamicTableOfButtons;
    function resetPossibleActivations return DynamicTableOfButtons;
-   function clickRandomButton( aPossibleActivations : DynamicTableOfButtons ) return Gtk.Button.Gtk_Button;
+
+   package RandomNatural is new Ada.Numerics.Discrete_Random( Natural );
+   function clickRandomButton( aPossibleActivations : in out DynamicTableOfButtons; aNaturalGenerator : in out RandomNatural.Generator  ) return Gtk.Button.Gtk_Button;
 
    type Turn is (Player, Computer);
    function Init_Turn( aTurn : in out Turn ) return Turn;
@@ -21,6 +24,7 @@ package GameTurn is
       entry Reset_PossibleActivations;
       entry Get_PossibleActtivations( inoutPossibleActivations : in out DynamicTableOfButtons );
       entry Click_RandomButton;
+      entry Set_ButtonToReclick( aButton : in out Gtk.Button.Gtk_Button );
       entry ReClick_Button;
       entry End_of_the_Game;
    end GameTurnMain;

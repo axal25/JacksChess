@@ -31,8 +31,8 @@ package ControllerLayer is
    procedure SetActive_aActivatedPosition( aPosition : in ModelLayer.Position );
 
    procedure Main;
-   procedure SetPossibleToActivate;
-   procedure DeSetPossibleToAtivate;
+   function SetPossibleToActivate( inoutAllData : in out VisualLayer.AllData ) return VisualLayer.AllData;
+   function DeSetPossibleToAtivate( inoutAllData : in out VisualLayer.AllData ) return VisualLayer.AllData;
 
    package UserCallback_Position is new Gtk.Handlers.User_Callback( Gtk.Widget.Gtk_Widget_Record, ModelLayer.Position );
    procedure Activate_Button( aPosition : in ModelLayer.Position );
