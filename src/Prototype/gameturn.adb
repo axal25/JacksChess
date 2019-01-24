@@ -47,16 +47,19 @@ package body GameTurn is
       return aNewPossibleActivations;
    end resetPossibleActivations;
    
-   procedure clickRandomButton( aPossibleActivations : DynamicTableOfButtons ) is
+   function clickRandomButton( aPossibleActivations : DynamicTableOfButtons ) return Gtk.Button.Gtk_Button is
+      aButton : Gtk.Button.Gtk_Button;
    begin
       if( aPossibleActivations'First = 0 and aPossibleActivations'Last = 0 ) then
          null; -- do nothing
          Put_Line("do nothing");
       else
          Put_Line("aPossibleActivations(1).Clicked; \/");
-         aPossibleActivations(10).Clicked;
+         aButton := aPossibleActivations( 10 );
+         aButton.Clicked;
          Put_Line("aPossibleActivations(1).Clicked; /\");
       end if;
+      return aButton;
    end clickRandomButton;
    
    task body GameTurnMain is
@@ -64,6 +67,7 @@ package body GameTurn is
       isEnd_of_the_Game : Boolean := False;
       aPossibleActivations : DynamicTableOfButtons := resetPossibleActivations;
       Unhandled_GameTurnMain_Exception : exception;
+      lastClickedButton : Gtk.Button.Gtk_Button;
    begin
       accept Start_the_Game;
       
@@ -110,9 +114,13 @@ package body GameTurn is
          or
             accept Click_RandomButton do
                Put_Line("procedure clickRandomButton( aPossibleActivations ); \/");
-               clickRandomButton( aPossibleActivations );
+               lastClickedButton := clickRandomButton( aPossibleActivations );
                Put_Line("procedure clickRandomButton( aPossibleActivations ); /\");
             end Click_RandomButton;
+         or
+            accept ReClick_Button do
+               lastClickedButton.Clicked;
+            end ReClick_Button;
          end select;
       end loop;
    exception

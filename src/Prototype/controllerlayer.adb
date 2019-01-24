@@ -69,9 +69,17 @@ package body ControllerLayer is
             end if;
          end loop;
          if( row = 2 ) then
-            Put_Line( "task_GT.Click_RandomButton; \/" );
-            task_GT.Click_RandomButton;
-            Put_Line( "task_GT.Click_RandomButton; /\" );
+            aPossibleMoves := newPossibleMoves( outterPossibleMoves => aPossibleMoves,
+                                                newSize             => 0 );
+            while( isPossibleMovesEmpty( aPossibleMoves ) ) loop
+               Put_Line( "task_GT.Click_RandomButton; \/" );
+               task_GT.Click_RandomButton;
+               Put_Line( "task_GT.Click_RandomButton; /\" );
+               
+               if( isPossibleMovesEmpty( aPossibleMoves ) ) then
+                  task_GT.ReClick_Button;
+               end if;
+            end loop;
          end if;
       end;
    end SetPossibleToActivate;
