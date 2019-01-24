@@ -56,9 +56,5 @@ package ModelLayer is
    
    function isWhite( aColor : Color ) return Boolean;
    function isBlack( aColor : Color ) return Boolean;
-   
---     function Set_Position( aAccessFigure : in out AccessFigure; aPosition : Position ) return AccessFigure;
---     function Set_isAlive( aAccessFigure : in out AccessFigure; aIsAlive : Boolean ) return AccessFigure;
---     function Set_isAlive( aFigure : in out Figure; aIsAlive : Boolean ) return Figure;
 
 end ModelLayer;

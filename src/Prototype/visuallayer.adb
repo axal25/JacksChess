@@ -97,7 +97,7 @@ package body VisualLayer is
       
       aFilePath := aFilePath & ".png";
       
-      Ada.Text_IO.Put_Line( "[" & aRowNo'Img & ", " & aColNo'Img & " ] " & "aFilePath = " & Ada.Strings.Unbounded.To_String( aFilePath ) );
+      --        Ada.Text_IO.Put_Line( "[" & aRowNo'Img & ", " & aColNo'Img & " ] " & "aFilePath = " & Ada.Strings.Unbounded.To_String( aFilePath ) );
       aImage := Gtk.Image.Gtk_Image_New_From_File( Ada.Strings.Unbounded.To_String( aFilePath ) );
       
       Gtk.Bin.Gtk_Bin( aMainWindow.aButtonGrid( row, col ) ).Add( Widget => aImage );

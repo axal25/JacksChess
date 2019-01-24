@@ -22,7 +22,6 @@ package body ControllerLayer is
    begin
       aAllData := VisualLayer.Main;         
       aAllData.aMainWindow.aWindow.On_Destroy( DestroyObject_And_MainQuit'Access );
-      Put_Line( "here?" );
       Setup_Task_GameTurn;
       SetPossibleToActivate;
       aAllData.aMainWindow.aWindow.Show_All;
@@ -41,7 +40,7 @@ package body ControllerLayer is
    procedure SetPossibleToActivate is
       aAliveFigures : ModelLayer.AliveFigures := aAllData.aChessBoard.aAliveFigures;      
       aTmpFigurePosition : ModelLayer.Position;
-      aButton : Gtk.Button.Gtk_Button;
+      aTmpButton : Gtk.Button.Gtk_Button;
       IdPosition : Gtk.Handlers.Handler_Id;
    begin
       declare
@@ -52,20 +51,52 @@ package body ControllerLayer is
             row := 1;
          else
             row := 2;
+            task_GT.Reset_PossibleActivations;
          end if;
          for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
             aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
-            aButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
+            aTmpButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
                                                          VisualLayer.AxisX( aTmpFigurePosition.aXPosition ) ); 
             
-            IdPosition := UserCallback_Position.Connect( aButton, "clicked", 
+            IdPosition := UserCallback_Position.Connect( aTmpButton, "clicked", 
                                                          UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
                                                          aTmpFigurePosition ); 
             
-            Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to SetPossibleToActivate " ); 
+            --              Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to SetPossibleToActivate " ); 
+            if( row = 2 ) then
+               task_GT.Append_PossibleActivations( aTmpButton );
+               Put_Line( "task_GT.Append_PossibleActivations( aTmpButton ); /\" );
+            end if;
          end loop;
+         if( row = 2 ) then
+            Put_Line( "task_GT.Click_RandomButton; \/" );
+            task_GT.Click_RandomButton;
+            Put_Line( "task_GT.Click_RandomButton; /\" );
+         end if;
       end;
    end SetPossibleToActivate;
+   
+   procedure DeSetPossibleToAtivate is
+      row : Integer;
+      aTmpFigurePosition : ModelLayer.Position;
+   begin
+      task_Gt.Get_Turn( aTurn );
+      if( aTurn = GameTurn.Player ) then
+         row := 1;
+      else
+         row := 2;
+      end if;
+      for col in aAllData.aChessBoard.aAliveFigures.First(2) .. aAllData.aChessBoard.aAliveFigures.Last(2) loop
+         aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
+         VisualLayer.Renew_Button( aRowNo      => aTmpFigurePosition.aYPosition,
+                                   aColNo      => aTmpFigurePosition.aXPosition,
+                                   aMainWindow => aAllData.aMainWindow,
+                                   aChessBoard => aAllData.aChessBoard );
+         --              Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to DeSetPossibleToActivate " ); 
+      end loop;
+      aAllData.aMainWindow.aWindow.Show_All;
+         
+   end DeSetPossibleToAtivate;
    
    procedure Activate_Button( aPosition : in ModelLayer.Position ) is
       IdPosition : Gtk.Handlers.Handler_Id;
@@ -861,16 +892,19 @@ package body ControllerLayer is
    
    procedure Move_Figure_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aToPosition : in ModelLayer.Position ) is
    begin
-      Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
+      --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
       Move_Figure( aToPosition );
-      Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
+      --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
+      DeSetPossibleToAtivate;
+      task_GT.End_Turn( aTurn );
+      SetPossibleToActivate;
    end Move_Figure_Call;
    
    procedure Move_Figure( aToPosition : in ModelLayer.Position ) is
       aFromPosition : ModelLayer.Position;
    begin
-      Put_Line("#1 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
-                 aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
+      --        Put_Line("#1 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
+      --                   aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
       if( isActivated = True ) then
          aFromPosition := aActivated_Position;
          
@@ -883,8 +917,8 @@ package body ControllerLayer is
       else
          null; -- do nothing
       end if;
-      Put_Line("#2 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
-                 aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
+      --        Put_Line("#2 Move_Figure => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "] <-- [" &
+      --                   aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
    end Move_Figure;
    
    function MoveFigureAndFreeInModel( aFromPosition : in ModelLayer.Position; aToPosition : in ModelLayer.Position; aAllData : in out VisualLayer.AllData ) return VisualLayer.AllData is

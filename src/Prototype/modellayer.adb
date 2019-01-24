@@ -10,18 +10,19 @@ package body ModelLayer is
    begin
       aChessBoard.aAliveFigures := Init_aliveFigures( aChessBoard.aAliveFigures );
       aChessBoard.aGrid := Init_Grid( aChessBoard.aGrid, aChessBoard.aAliveFigures );
-      Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
-      Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
---        declare
---           aPosition : Position;
---        begin
---           aPosition.aYPosition := 1;
---           aPosition.aXPosition := D;
---           aChessBoard.aAliveFigures := Kill_Figure( aAliveFigures => aChessBoard.aAliveFigures,
---                                                     aPosition     => aPosition );
---           Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
---           Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
---        end;
+      --        Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
+      --        Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
+
+      --        declare
+      --           aPosition : Position;
+      --        begin
+      --           aPosition.aYPosition := 1;
+      --           aPosition.aXPosition := D;
+      --           aChessBoard.aAliveFigures := Kill_Figure( aAliveFigures => aChessBoard.aAliveFigures,
+      --                                                     aPosition     => aPosition );
+      --           Ada.Text_IO.Put_Line( "Main > ModelLayer.AliveFigures_To_String :" );
+      --           Ada.Text_IO.Put_Line( "    " & AliveFigures_To_String( aChessBoard.aAliveFigures ) );
+      --        end;
       
       --        Ada.Text_IO.Put_Line(" aChessBoard.aAliveFigures /= null "); 
       --        if( aChessBoard.aAliveFigures.aDynamicTable /= null ) then
@@ -283,38 +284,5 @@ package body ModelLayer is
       end loop;
       return aAliveFigures;
    end;
-   
---     function Set_Position( aAccessFigure : in out AccessFigure; aPosition : Position ) return AccessFigure is
---       aNewFigure : Figure;
---     begin
---        aNewFigure.aType := aAccessFigure.all.aType;
---        aNewFigure.aColor := aAccessFigure.all.aColor;
---        aNewFigure.isAlive := aAccessFigure.all.isAlive;
---        aNewFigure.aPosition := aPosition;
---        aAccessFigure.all := aNewFigure;
---        return aAccessFigure;
---     end Set_Position;
---     
---     function Set_isAlive( aAccessFigure : in out AccessFigure; aIsAlive : Boolean ) return AccessFigure is
---       aNewFigure : Figure;
---     begin
---        aNewFigure.aType := aAccessFigure.all.aType;
---        aNewFigure.aColor := aAccessFigure.all.aColor;
---        aNewFigure.aPosition := aAccessFigure.all.aPosition;
---        aNewFigure.isAlive := aIsAlive;
---        aAccessFigure.all := aNewFigure;
---        return aAccessFigure;
---     end Set_isAlive;
---     
---     function Set_isAlive( aFigure : in out Figure; aIsAlive : Boolean ) return Figure is
---       aNewFigure : Figure;
---     begin
---        aNewFigure.aType := aFigure.aType;
---        aNewFigure.aColor := aFigure.aColor;
---        aNewFigure.aPosition := aFigure.aPosition;
---        aNewFigure.isAlive := aIsAlive;
---        aFigure := aNewFigure;
---        return aFigure;
---     end Set_isAlive;
 
 end ModelLayer;
