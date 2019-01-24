@@ -1,6 +1,7 @@
 with VisualLayer; use VisualLayer;
 with ModelLayer; use ModelLayer;
 with GameTurn; use GameTurn;
+with AfterGameWindow;
 with Gtk.Main;
 with Gtk.Widget;
 with Gtk.Window;
@@ -16,7 +17,7 @@ package body ControllerLayer is
    isActivated : Boolean := False;
    aPossibleMoves : PossibleMoves;
    task_GT : GameTurn.GameTurnMain;
-   aTurn : GameTurn.Turn;
+   aTurn : GameTurn.Turn := GameTurn.Player;
    
    procedure Main is 
    begin
@@ -31,10 +32,6 @@ package body ControllerLayer is
    procedure Setup_Task_GameTurn is
    begin
       task_GT.Start_the_Game;
-      task_GT.Get_Turn( aTurn );
-      task_GT.End_Turn( aTurn );
-      Put_Line( "--------------" );
-      task_GT.End_Turn( aTurn );
    end;
    
    procedure SetPossibleToActivate is
@@ -46,7 +43,6 @@ package body ControllerLayer is
       declare
          row : Integer;
       begin
-         task_GT.Get_Turn( aTurn );
          if( aTurn = GameTurn.Player ) then
             row := 1;
          else
@@ -56,39 +52,49 @@ package body ControllerLayer is
          for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
             aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
             aTmpButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
-                                                         VisualLayer.AxisX( aTmpFigurePosition.aXPosition ) ); 
+                                                            VisualLayer.AxisX( aTmpFigurePosition.aXPosition ) ); 
             
             IdPosition := UserCallback_Position.Connect( aTmpButton, "clicked", 
                                                          UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
                                                          aTmpFigurePosition ); 
             
             --              Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to SetPossibleToActivate " ); 
-            if( row = 2 ) then
+            if( aTurn = GameTurn.Computer ) then
                task_GT.Append_PossibleActivations( aTmpButton );
-               Put_Line( "task_GT.Append_PossibleActivations( aTmpButton ); /\" );
             end if;
          end loop;
-         if( row = 2 ) then
-            aPossibleMoves := newPossibleMoves( outterPossibleMoves => aPossibleMoves,
-                                                newSize             => 0 );
+         
+         if( aTurn = GameTurn.Computer ) then
             while( isPossibleMovesEmpty( aPossibleMoves ) ) loop
-               Put_Line( "task_GT.Click_RandomButton; \/" );
+               Put_Line( " >> 1nd button click - computer activate << " );
                task_GT.Click_RandomButton;
-               Put_Line( "task_GT.Click_RandomButton; /\" );
-               
                if( isPossibleMovesEmpty( aPossibleMoves ) ) then
-                  task_GT.ReClick_Button;
+                  ComputerDeactivateOnEmptyPossibleMoves;
                end if;
             end loop;
+            task_GT.Reset_PossibleActivations;
+            for I in aPossibleMoves.First .. aPossibleMoves.Last loop
+               task_GT.Append_PossibleActivations( 
+                                                   aAllData.aMainWindow.aButtonGrid( 
+                                                     VisualLayer.AxisY( aPossibleMoves.aDynamicTable( I ).aYPosition ), 
+                                                     VisualLayer.AxisX( aPossibleMoves.aDynamicTable( I ).aXPosition )
+                                                    )
+                                                  );
+            end loop;
+            Put_Line( " >> 2nd button click - computer move << " );
+            task_GT.Click_RandomButton;
+            Put_Line( " !!! ### Powrot do SetPossibleToActivate ### !!! " );
          end if;
+         
       end;
+      Put_Line("is SetPossibleToActivate ever dieing?");
    end SetPossibleToActivate;
    
-   procedure DeSetPossibleToAtivate is
+   procedure DeSetPossibleToActivate is
       row : Integer;
       aTmpFigurePosition : ModelLayer.Position;
    begin
-      task_Gt.Get_Turn( aTurn );
+      
       if( aTurn = GameTurn.Player ) then
          row := 1;
       else
@@ -104,10 +110,28 @@ package body ControllerLayer is
       end loop;
       aAllData.aMainWindow.aWindow.Show_All;
          
-   end DeSetPossibleToAtivate;
+   end DeSetPossibleToActivate;   
+   
+   procedure ComputerDeactivateOnEmptyPossibleMoves is
+      aActivated_Button : Gtk.Button.Gtk_Button;
+   begin
+      if( aTurn = GameTurn.Computer ) then
+         if( isActivated = True ) then
+            aActivated_Button := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aActivated_Position.aYPosition ), 
+                                                                   VisualLayer.AxisX( aActivated_Position.aXPosition ) );
+            task_GT.Set_ButtonToReclick( aActivated_Button );
+            if( isPossibleMovesEmpty( aPossibleMoves ) ) then
+               Put_Line( "task_GT.ReClick_Button; \/" );
+               task_GT.ReClick_Button;
+               Put_Line( "task_GT.ReClick_Button; /\" );
+            end if;
+         end if;
+      end if;
+   end ComputerDeactivateOnEmptyPossibleMoves;
    
    procedure Activate_Button( aPosition : in ModelLayer.Position ) is
       IdPosition : Gtk.Handlers.Handler_Id;
+      --        aButtonToDeactivate : Gtk.Button.Gtk_Button;
    begin
       if( isActivated = True ) then
          Put_Line("Activate_Button [" & aPosition.aYPosition'Img & "," & aPosition.aXPosition'Img & "] vs. [" &
@@ -119,11 +143,16 @@ package body ControllerLayer is
                                 aColNo      => aPosition.aXPosition,
                                 aMainWindow => aAllData.aMainWindow,
                                 aChessBoard => aAllData.aChessBoard );
+      
+      --        if( aTurn = GameTurn.Computer ) then
+      --           aButtonToDeactivate := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition), 
+      --                                                                 VisualLayer.AxisX( aPosition.aXPosition ) ); 
+      --           task_GT.Set_ButtonToReclick( aButtonToDeactivate );
+      --        end if;
       IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
                                                    "clicked", 
                                                    UserCallback_Position.To_Marshaller( Deactivate_Button_Call'Access ),
                                                    aPosition );
-      
       FindPossibleMoves( aPosition );
       ShowPossibleMoves;
       aAllData.aMainWindow.aWindow.Show_All;
@@ -131,7 +160,7 @@ package body ControllerLayer is
    
    procedure Activate_Button_Call( Object : access Gtk.Widget.Gtk_Widget_Record'Class; aPosition : in ModelLayer.Position ) is
    begin
-      Activate_Button( aPosition );
+      Activate_Button( aPosition );    
    end Activate_Button_Call;
    
    procedure Deactivate_Button is
@@ -147,7 +176,7 @@ package body ControllerLayer is
       IdPosition := UserCallback_Position.Connect( aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aPosition.aYPosition ), VisualLayer.AxisX( aPosition.aXPosition ) ), 
                                                    "clicked", 
                                                    UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
-                                                   aPosition ); 
+                                                   aPosition );
       HidePossibleMoves;
       aAllData.aMainWindow.aWindow.Show_All;
    end Deactivate_Button;
@@ -879,8 +908,6 @@ package body ControllerLayer is
                                 aMainWindow => aAllData.aMainWindow,
                                 aChessBoard => aAllData.aChessBoard );
       if( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken = True ) then
-         task_GT.Get_Turn( aTurn );
-         Put_Line( "aTurn = " & aTurn'Img );
          if( aTurn = GameTurn.Player ) then
             isColorMatchingTurn := ModelLayer.isWhite( aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
          else
@@ -903,8 +930,14 @@ package body ControllerLayer is
       --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
       Move_Figure( aToPosition );
       --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
-      DeSetPossibleToAtivate;
-      task_GT.End_Turn( aTurn );
+      DeSetPossibleToActivate;
+      
+      if( Is_End_of_the_Game = False ) then
+         End_of_the_Game( aTurn );
+      end if;
+      
+      aTurn := End_Turn( aTurn );
+      
       SetPossibleToActivate;
    end Move_Figure_Call;
    
@@ -915,7 +948,6 @@ package body ControllerLayer is
       --                   aFromPosition.aYPosition'Img & "," & aFromPosition.aXPosition'Img & "] (isActivated = " & isActivated'Img & ")" );
       if( isActivated = True ) then
          aFromPosition := aActivated_Position;
-         
          aAllData := MoveFigureAndFreeInModel( aFromPosition => aFromPosition,
                                                aToPosition => aToPosition, 
                                                aAllData => aAllData );
@@ -974,5 +1006,29 @@ package body ControllerLayer is
       Gtk.Main.Main_Quit;
       task_GT.End_of_the_Game;
    end DestroyObject_And_MainQuit;
+   
+   function End_Turn( aTurn : in out GameTurn.Turn ) return GameTurn.Turn is
+   begin
+      if( aTurn = GameTurn.Player ) then
+         aTurn := GameTurn.Computer;
+      else
+         aTurn := GameTurn.Player;
+      end if;
+      
+      return aTurn;
+   end End_Turn;
+   
+   function Is_End_of_the_Game return Boolean is
+   begin
+      null;
+      return False;
+   end Is_End_of_the_Game;
+   
+   procedure End_of_the_Game( aTurn : in GameTurn.Turn ) is
+   begin
+      aAllData.aMainWindow.aWindow.Destroy;
+         
+      AfterGameWindow.Main( aWinner => aTurn );
+   end End_of_the_Game;
 
 end ControllerLayer;

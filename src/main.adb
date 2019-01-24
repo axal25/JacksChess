@@ -43,14 +43,14 @@ begin
    --     Minesweeper.Main;
 
    --     CallBack_V1.Main;
-   CallBack_V2.Main;
+   --     CallBack_V2.Main;
    --     MyCallback.Main;
    ControllerLayer.Main;
 
 
    Put_Line("Da BIG Main - Finish");
    Spam;
---  exception
---     when GtkAdaTest1.GtkMainInitError => Put_Line("Couldn't Innitiate Gtk.Main.Init");
---     when others => raise Unhandled_Exception;
+exception
+      --     when GtkAdaTest1.GtkMainInitError => Put_Line("Couldn't Innitiate Gtk.Main.Init");
+   when others => raise Unhandled_Exception;
 end Main;
