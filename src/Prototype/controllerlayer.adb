@@ -932,7 +932,7 @@ package body ControllerLayer is
       --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
       DeSetPossibleToActivate;
       
-      if( Is_End_of_the_Game = False ) then
+      if( Is_End_of_the_Game = True ) then
          End_of_the_Game( aTurn );
       end if;
       
