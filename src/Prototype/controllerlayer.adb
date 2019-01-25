@@ -284,7 +284,7 @@ package body ControllerLayer is
                                                          aPosition       => tmpPosition,
                                                          inPossibleMoves => tmpPossibleMoves);
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
-               tmpPossibleMoves := FindPossibleMovesKingWithoutCheck(tmp_AllData => tmp_AllData,
+               tmpPossibleMoves := FindPossibleMovesKing(tmp_AllData => tmp_AllData,
                                                                      aPosition       => tmpPosition,
                                                                      inPossibleMoves => tmpPossibleMoves);
          end case;
@@ -1295,14 +1295,15 @@ package body ControllerLayer is
       return areAllPossibleMovesDanger;
    end Is_End_of_the_Game;
    
-   function FindPossibleMovesKingWithoutCheck( aKingsPossibleMoves : in PossibleMoves; 
-                                               aTurn : GameTurn.Turn ) 
+function FindPossibleMovesKingWithoutCheck( aAllData : in VisualLayer.AllData; 
+                                               aKingsPosition : in ModelLayer.Position; 
+                                               aKingsPossibleMoves : in out PossibleMoves )
                                               return PossibleMoves is
       aColor : ModelLayer.Color;
-      aKingPosition : ModelLayer.Position;
       row : Integer;
       aNewPossibleMoves : PossibleMoves;
-   begin
+      inTurn : GameTurn.Turn := aTurn;
+   begin        
       if( aTurn = GameTurn.Player ) then
          aColor := ModelLayer.Black;
          row := 2;
@@ -1310,24 +1311,25 @@ package body ControllerLayer is
          aColor := ModelLayer.White;
          row := 1;
       end if;
-      for col in aAllData.aChessBoard.aAliveFigures.First(2) .. aAllData.aChessBoard.aAliveFigures.Last(2) loop
-         if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aType = ModelLayer.King ) then
-            aKingPosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition;
-         end if;
-      end loop;
       aNewPossibleMoves := aKingsPossibleMoves;
-      for I in aNewPossibleMoves.First .. aNewPossibleMoves.Last loop
-         if( isKingInDanger( tmp_AllData  => aAllData,
-                            aColor       => aColor,
-                            kingPosition => aNewPossibleMoves.aDynamicTable( I ) ) = False ) then
-            aNewPossibleMoves := removePossibleMoves( outterPossibleMoves => aNewPossibleMoves,
-                                                        aPosition           => aNewPossibleMoves.aDynamicTable( I ) );
-            Put_Line("!!! false2 !!!");
-         else
-            Put_Line("true2");
-         end if;
-      end loop;
-      
+      if( isPossibleMovesEmpty( outterPossibleMoves => aNewPossibleMoves ) = False ) then
+         for I in aNewPossibleMoves.First .. aNewPossibleMoves.Last loop
+            Put_Line( "#1 Last = " & aKingsPossibleMoves.Last'Img & " vs. I = " & I'Img );
+            Put_Line( "#2 Last = " & aNewPossibleMoves.Last'Img & " vs. I = " & I'Img );
+            if( isKingInDanger( tmp_AllData  => aAllData,
+                               aColor       => aColor,
+                               kingPosition => aNewPossibleMoves.aDynamicTable( I ) ) = False ) then
+               aNewPossibleMoves := removePossibleMoves( outterPossibleMoves => aNewPossibleMoves,
+                                                         aPosition           => aNewPossibleMoves.aDynamicTable( I ) );
+               Put_Line("!!! false2 !!!");
+            else
+               Put_Line("true2");
+            end if;
+         end loop;
+      else
+         null; -- do nothing
+      end if;
+      aKingsPossibleMoves := aNewPossibleMoves;
       return aNewPossibleMoves;
       
    end FindPossibleMovesKingWithoutCheck;

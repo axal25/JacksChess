@@ -66,8 +66,9 @@ package ControllerLayer is
    function concatenatePossibleMoves( outterPossibleMoves1 : in PossibleMoves;
                                       outterPossibleMoves2 : in PossibleMoves  )
                                      return PossibleMoves;
-   function FindPossibleMovesKingWithoutCheck( aKingsPossibleMoves : in PossibleMoves;
-                                               aTurn : GameTurn.Turn )
+   function FindPossibleMovesKingWithoutCheck( aAllData : in VisualLayer.AllData;
+                                               aKingsPosition : in ModelLayer.Position;
+                                               aKingsPossibleMoves : in out PossibleMoves )
                                               return PossibleMoves;
 
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
