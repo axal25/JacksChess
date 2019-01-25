@@ -790,21 +790,34 @@ package body ControllerLayer is
                tmp_row_pawn :=copy_AliveFigures.aDynamicTable( row, col ).aPosition.aYPosition;
                tmp_col_pawn :=copy_AliveFigures.aDynamicTable( row, col ).aPosition.aXPosition;
                Put_Line( ">>>>>>>>>>>>>> ZNALAZLEM PAWN [" & tmp_row_pawn'Img & ", " & tmp_col_pawn'Img & " ] ");
-               
+               tmp_row := tmp_row_pawn + 1; 
                if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )>1) then 
                   tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )-1) ;
                   tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
-                                                          aY                  => tmp_row_pawn,
+                                                          aY                  => tmp_row,
                                                           ax                  => tmp_col);
                end if;
             
                if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )<8) then
                   tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )+1) ;
                   tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
-                                                          aY                  => tmp_row_pawn,
+                                                          aY                  => tmp_row,
                                                           ax                  => tmp_col);
                end if; 
-               
+               tmp_row := tmp_row_pawn - 1; 
+               if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )>1) then 
+                  tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )-1) ;
+                  tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
+                                                          aY                  => tmp_row,
+                                                          ax                  => tmp_col);
+               end if;
+            
+               if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )<8) then
+                  tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )+1) ;
+                  tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
+                                                          aY                  => tmp_row,
+                                                          ax                  => tmp_col);
+               end if; 
                
                if(isPossibleMovesEmpty(kingDangerSquares) = True) then
                   kingDangerSquares := tmpPossibleMoves;
