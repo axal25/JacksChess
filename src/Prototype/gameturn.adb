@@ -76,7 +76,6 @@ package body GameTurn is
    end clickRandomButton;
    
    task body GameTurnMain is
-      isReady : Boolean := False;
       aTurn : Turn := Player;
       isEnd_of_the_Game : Boolean := False;
       aPossibleActivations : DynamicTableOfButtons := resetPossibleActivations;
@@ -91,58 +90,58 @@ package body GameTurn is
       Put_Line("Read... Set... Go!");
       Put_Line( aTurn'Img & "'s Turn..." );
       RandomNatural.Reset( aNaturalGenerator );
-      isReady := True;
+      
          
       while( isEnd_of_the_Game = False ) loop
          select
-            when isReady = True =>
+            
                accept End_of_the_Game do
-                  isReady := False;
+                  
                   Put_Line("End of the Game");
                   isEnd_of_the_Game := True;
-                  isReady := True;
+                  
                end End_of_the_Game;
          or
-            when isReady = True =>
+            
                accept Append_PossibleActivations( aButton : in out Gtk.Button.Gtk_Button ) do
-                  isReady := False;
+                  
                   aPossibleActivations := appendPossibleActivations( aPossibleActivations, aButton );
-                  isReady := True;
+                  
                end Append_PossibleActivations;
          or
-            when isReady = True =>
+            
                accept Reset_PossibleActivations do
-                  isReady := False;
+                  
                   aPossibleActivations := resetPossibleActivations;
-                  isReady := True;
+                  
                end Reset_PossibleActivations;
          or
-            when isReady = True =>
+            
                accept Get_PossibleActtivations( inoutPossibleActivations : in out DynamicTableOfButtons ) do
-                  isReady := False;
+                  
                   inoutPossibleActivations := aPossibleActivations;
-                  isReady := True;
+                  
                end Get_PossibleActtivations;   
          or
-            when isReady = True =>
+            
                accept Click_RandomButton do
-                  isReady := False;
+                  
                   Put_Line("                 procedure clickRandomButton( aPossibleActivations ); \/");
                   aButtonToReclick := clickRandomButton( aPossibleActivations, aNaturalGenerator );
                   Put_Line("                 procedure clickRandomButton( aPossibleActivations ); /\");
-                  isReady := True;
+                  
                end Click_RandomButton;
          or
-            when isReady = True =>
+            
                accept Set_ButtonToReclick( aButton : in out Gtk.Button.Gtk_Button ) do
-                  isReady := False;
+                  
                   aButtonToReclick := aButton;
-                  isReady := True;
+                  
                end Set_ButtonToReclick;
          or
-            when isReady = True =>
+            
                accept ReClick_Button do
-                  isReady := False;
+                  
                   if( aButtonToReclick = null ) then
                      raise aButtonToReclick_isNull_Exception;
                   else
@@ -151,7 +150,7 @@ package body GameTurn is
                      aButtonToReclick.Clicked;
                      Put_Line( "aButtonToReclick.Clicked; /\" );
                   end if;
-                  isReady := True;
+                  
                end ReClick_Button;
          end select;
       end loop;
