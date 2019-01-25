@@ -12,16 +12,13 @@ project Jackschess is
    case Library_Type is
 
       when "static" =>
-         for Source_Dirs use ("src", "src/MessingAround", "src/MessingAround/AdaCore", "src/MessingAround/AdaCore/GtkAdaTutorials", "src/MessingAround/AnotherTutorial", "src/MessingAround/Minesweeper", 
-            "src/MessingAround/TestingCallbacks", "src/Prototype", "images");
+         for Source_Dirs use ("src", "src/Prototype", "images");
 
       when "static-pic" =>
-         for Source_Dirs use ("src", "src/MessingAround", "src/MessingAround/AdaCore", "src/MessingAround/AdaCore/GtkAdaTutorials", "src/MessingAround/AnotherTutorial", "src/MessingAround/Minesweeper", 
-            "src/MessingAround/TestingCallbacks", "src/Prototype", "images");
+         for Source_Dirs use ("src", "src/Prototype", "images");
 
       when "relocatable" =>
-         for Source_Dirs use ("src", "src/MessingAround", "src/MessingAround/AdaCore", "src/MessingAround/AdaCore/GtkAdaTutorials", "src/MessingAround/AnotherTutorial", "src/MessingAround/Minesweeper", 
-            "src/MessingAround/TestingCallbacks", "src/Prototype", "images");
+         for Source_Dirs use ("src", "src/Prototype", "images");
    end case;
 
    package Check is
