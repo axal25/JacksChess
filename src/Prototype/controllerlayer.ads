@@ -52,15 +52,20 @@ package ControllerLayer is
    procedure ChangeFigureSPostion( oldPosition : ModelLayer.Position; newPosition : ModelLayer.Position );
 
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position );
-   procedure FindPossibleMovesPawn( aPosition : in ModelLayer.Position );
-   procedure PawnAttackMoves( tmp_row : in ModelLayer.AxisY; col : in ModelLayer.AxisX; aColor : in ModelLayer.Color );
-   procedure FindPossibleMovesKnight( aPosition : in ModelLayer.Position );
-   procedure FindPossibleMovesBishop( aPosition : in ModelLayer.Position );
-   procedure FindPossibleMovesRook( aPosition : in ModelLayer.Position );
-   procedure FindPossibleMovesKing( aPosition : in ModelLayer.Position );
-
-   function FindPossibleMovesInLine ( tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
-   function isEnemyOrEmpty( row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
+   function FindMoves (tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; aColor :in  ModelLayer.Color) return PossibleMoves;
+   function FindPossibleMovesPawn( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function PawnAttackMoves( tmp_row : in ModelLayer.AxisY; col : in ModelLayer.AxisX ; aColor : in ModelLayer.Color; tmp_AllData : in  VisualLayer.AllData; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function FindPossibleMovesKnight( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function FindPossibleMovesBishop( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function FindPossibleMovesRook( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function FindPossibleMovesKing( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
+   function kingDangerSquares (tmp_AllData : in  VisualLayer.AllData; aColor :in  ModelLayer.Color) return PossibleMoves;
+   function isKingInDanger(tmp_AllData : in  VisualLayer.AllData; aColor :in  ModelLayer.Color; kingPosition : in out ModelLayer.Position) return Boolean;
+   function FindPossibleMovesInLine ( tmp_AllData : in  VisualLayer.AllData; inPossibleMoves : in out PossibleMoves; tmp_row : in out ModelLayer.AxisY; tmp_col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
+   function isEnemyOrEmpty( tmp_AllData : in  VisualLayer.AllData; row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
+   function concatenatePossibleMoves( outterPossibleMoves1 : in PossibleMoves;
+                                      outterPossibleMoves2 : in PossibleMoves  )
+                                  return PossibleMoves;
 
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
 
