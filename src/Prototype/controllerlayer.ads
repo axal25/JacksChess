@@ -65,7 +65,10 @@ package ControllerLayer is
    function isEnemyOrEmpty( tmp_AllData : in  VisualLayer.AllData; row : in out ModelLayer.AxisY; col : in out ModelLayer.AxisX; aColor : in out ModelLayer.Color ) return Boolean;
    function concatenatePossibleMoves( outterPossibleMoves1 : in PossibleMoves;
                                       outterPossibleMoves2 : in PossibleMoves  )
-                                  return PossibleMoves;
+                                     return PossibleMoves;
+   function FindPossibleMovesKingWithoutCheck( aKingsPossibleMoves : in PossibleMoves;
+                                               aTurn : GameTurn.Turn )
+                                              return PossibleMoves;
 
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
 
