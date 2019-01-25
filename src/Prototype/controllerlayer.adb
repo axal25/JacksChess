@@ -1134,7 +1134,7 @@ package body ControllerLayer is
       --        Put_Line("#1 Move_Figure_Call => [" & aToPosition.aYPosition'Img & "," & aToPosition.aXPosition'Img & "]");
       DeSetPossibleToActivate;
       
-      if( Is_End_of_the_Game = True ) then
+      if( Is_End_of_the_Game( aTurn ) = True ) then
          End_of_the_Game( aTurn );
       end if;
       
@@ -1220,10 +1220,44 @@ package body ControllerLayer is
       return aTurn;
    end End_Turn;
    
-   function Is_End_of_the_Game return Boolean is
+   function Is_End_of_the_Game( aTurn : GameTurn.Turn ) return Boolean is
+      aColor : ModelLayer.Color;
+      aKingPosition : ModelLayer.Position;
+      row : Integer;
+      aKingsPossibleMoves : PossibleMoves;
+      areAllPossibleMovesDanger : Boolean := True;
    begin
-      null;
-      return False;
+      if( aTurn = GameTurn.Player ) then
+         aColor := ModelLayer.Black;
+         row := 2;
+      else
+         aColor := ModelLayer.White;
+         row := 1;
+      end if;
+      for col in aAllData.aChessBoard.aAliveFigures.First(2) .. aAllData.aChessBoard.aAliveFigures.Last(2) loop
+         if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aType = ModelLayer.King ) then
+            aKingPosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition;
+         end if;
+      end loop;
+      aKingsPossibleMoves := FindPossibleMovesKing( tmp_AllData     => aAllData,
+                                                    aPosition       => aKingPosition,
+                                                    inPossibleMoves => aKingsPossibleMoves );
+      
+      aKingsPossibleMoves := appendPossibleMoves( outterPossibleMoves => aKingsPossibleMoves,
+                                                  newPosition           => aKingPosition );
+      
+      for I in aKingsPossibleMoves.First .. aKingsPossibleMoves.Last loop
+         if( isKingInDanger( tmp_AllData  => aAllData,
+                            aColor       => aColor,
+                            kingPosition => aKingsPossibleMoves.aDynamicTable( I ) ) = False ) then
+            areAllPossibleMovesDanger := False;
+            Put_Line("!!! false !!!");
+         else
+            Put_Line("true");
+         end if;
+      end loop;
+      
+      return areAllPossibleMovesDanger;
    end Is_End_of_the_Game;
    
    procedure End_of_the_Game( aTurn : in GameTurn.Turn ) is

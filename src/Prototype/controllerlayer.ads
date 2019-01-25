@@ -36,7 +36,7 @@ package ControllerLayer is
    procedure DeSetPossibleToActivate;
    procedure ComputerDeactivateOnEmptyPossibleMoves;
    function End_Turn( aTurn : in out GameTurn.Turn ) return GameTurn.Turn;
-   function Is_End_of_the_Game return Boolean;
+   function Is_End_of_the_Game( aTurn : GameTurn.Turn ) return Boolean;
    procedure End_of_the_Game( aTurn : in GameTurn.Turn );
 
    package UserCallback_Position is new Gtk.Handlers.User_Callback( Gtk.Widget.Gtk_Widget_Record, ModelLayer.Position );
