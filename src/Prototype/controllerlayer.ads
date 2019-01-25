@@ -52,6 +52,7 @@ package ControllerLayer is
    procedure ChangeFigureSPostion( oldPosition : ModelLayer.Position; newPosition : ModelLayer.Position );
 
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position );
+   function FindMoves2 (tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; aColor :in  ModelLayer.Color) return PossibleMoves;
    function FindMoves (tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; aColor :in  ModelLayer.Color) return PossibleMoves;
    function FindPossibleMovesPawn( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
    function PawnAttackMoves( tmp_row : in ModelLayer.AxisY; col : in ModelLayer.AxisX ; aColor : in ModelLayer.Color; tmp_AllData : in  VisualLayer.AllData; inPossibleMoves : in out PossibleMoves ) return PossibleMoves;
@@ -66,9 +67,10 @@ package ControllerLayer is
    function concatenatePossibleMoves( outterPossibleMoves1 : in PossibleMoves;
                                       outterPossibleMoves2 : in PossibleMoves  )
                                      return PossibleMoves;
-   function FindPossibleMovesKingWithoutCheck( aKingsPossibleMoves : in PossibleMoves;
-                                               aTurn : GameTurn.Turn )
-                                              return PossibleMoves;
+   function FindPossibleMovesKingWithoutCheck( aAllData : in VisualLayer.AllData;
+                                               aKingsPosition : in ModelLayer.Position;
+                                                 aKingsPOssibleMoves : in out PossibleMoves )
+                                                 return PossibleMoves;
 
    procedure DestroyObject_And_MainQuit( Object: access Gtk.Widget.Gtk_Widget_Record'Class );
 

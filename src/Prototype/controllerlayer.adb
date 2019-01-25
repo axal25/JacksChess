@@ -238,9 +238,9 @@ package body ControllerLayer is
       row : ModelLayer.AxisY := aPosition.aYPosition;
       tmpPossibleMoves : PossibleMoves;
    begin
-      aPossibleMoves := FindMoves(tmp_AllData => aAllData,
-                                  aPosition   => tmpPosition,
-                                  aColor      => aColor);
+      aPossibleMoves := FindMoves2(tmp_AllData => aAllData,
+                                   aPosition   => tmpPosition,
+                                   aColor      => aColor);
       ---tmpPosition.aYPosition := aPosition.aYPosition +1;
       ---tmpPosition.aXPosition := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmpPosition.aXPosition ) +1 );
       --   Put_Line( ">> [" & tmpPosition.aYPosition'Img & "," & tmpPosition.aXPosition'Img & "]" );
@@ -284,14 +284,59 @@ package body ControllerLayer is
                                                          aPosition       => tmpPosition,
                                                          inPossibleMoves => tmpPossibleMoves);
             when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
-               tmpPossibleMoves := FindPossibleMovesKingWithoutCheck(tmp_AllData => tmp_AllData,
-                                                                     aPosition       => tmpPosition,
-                                                                     inPossibleMoves => tmpPossibleMoves);
+               tmpPossibleMoves := FindPossibleMovesKing(tmp_AllData => tmp_AllData,
+                                                         aPosition       => tmpPosition,
+                                                         inPossibleMoves => tmpPossibleMoves);
          end case;
          Put_Line( "FindPossibleMoves: " & PossibleMovesToString( tmpPossibleMoves ) );
       end if;
       return tmpPossibleMoves;
    end FindMoves;
+   
+   function FindMoves2 (tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; aColor :in  ModelLayer.Color) return PossibleMoves is
+      bColor : ModelLayer.Color;
+      aFigureType : ModelLayer.FigureType;
+      isTaken : Boolean := tmp_AllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
+      tmpPosition : ModelLayer.Position := aPosition;
+      row : ModelLayer.AxisY := aPosition.aYPosition;
+      tmpPossibleMoves : PossibleMoves;
+   begin
+      if( isTaken = True ) then
+         aFigureType := ModelLayer.FigureType'( tmp_AllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aType );
+         bColor := ModelLayer.Color'( tmp_AllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).aAccessFigure.all.aColor );
+         case aFigureType is
+            when ModelLayer.FigureType'( ModelLayer.Pawn ) => Put_Line( "_pawn" );
+               tmpPossibleMoves := FindPossibleMovesPawn(tmp_AllData => tmp_AllData,
+                                                         aPosition       => tmpPosition,
+                                                         inPossibleMoves => tmpPossibleMoves);
+            when ModelLayer.FigureType'( ModelLayer.Knight ) => Put_Line( "_knight" );
+               tmpPossibleMoves := FindPossibleMovesKnight(tmp_AllData => tmp_AllData,
+                                                           aPosition       => tmpPosition,
+                                                           inPossibleMoves => tmpPossibleMoves);
+            when ModelLayer.FigureType'( ModelLayer.Bishop ) => Put_Line( "_bishop" );
+               tmpPossibleMoves := FindPossibleMovesBishop(tmp_AllData => tmp_AllData,
+                                                           aPosition       => tmpPosition,
+                                                           inPossibleMoves => tmpPossibleMoves);
+            when ModelLayer.FigureType'( ModelLayer.Rook ) => Put_Line(  "_rook" );
+               tmpPossibleMoves := FindPossibleMovesRook(tmp_AllData => tmp_AllData,
+                                                         aPosition       => tmpPosition,
+                                                         inPossibleMoves => tmpPossibleMoves);
+            when ModelLayer.FigureType'( ModelLayer.Queen ) => Put_Line( "_queen" );
+               tmpPossibleMoves := FindPossibleMovesBishop(tmp_AllData => tmp_AllData,
+                                                           aPosition       => tmpPosition,
+                                                           inPossibleMoves => tmpPossibleMoves);
+               tmpPossibleMoves := FindPossibleMovesRook(tmp_AllData => tmp_AllData,
+                                                         aPosition       => tmpPosition,
+                                                         inPossibleMoves => tmpPossibleMoves);
+            when ModelLayer.FigureType'( ModelLayer.King ) => Put_Line( "_king" );
+               tmpPossibleMoves := FindPossibleMovesKingWithoutCheck( aAllData => tmp_AllData,
+                                                                      aKingsPosition       => tmpPosition,
+                                                                      aKingsPOssibleMoves => tmpPossibleMoves);
+         end case;
+         Put_Line( "FindPossibleMoves: " & PossibleMovesToString( tmpPossibleMoves ) );
+      end if;
+      return tmpPossibleMoves;
+   end FindMoves2;
    
    function FindPossibleMovesPawn( tmp_AllData : in  VisualLayer.AllData; aPosition : in ModelLayer.Position; inPossibleMoves : in out PossibleMoves ) return PossibleMoves is
       tmpPossibleMoves : PossibleMoves := inPossibleMoves;
@@ -1295,14 +1340,15 @@ package body ControllerLayer is
       return areAllPossibleMovesDanger;
    end Is_End_of_the_Game;
    
-   function FindPossibleMovesKingWithoutCheck( aKingsPossibleMoves : in PossibleMoves; 
-                                               aTurn : GameTurn.Turn ) 
+   function FindPossibleMovesKingWithoutCheck( aAllData : in VisualLayer.AllData; 
+                                               aKingsPosition : in ModelLayer.Position; 
+                                               aKingsPossibleMoves : in out PossibleMoves )
                                               return PossibleMoves is
       aColor : ModelLayer.Color;
-      aKingPosition : ModelLayer.Position;
       row : Integer;
       aNewPossibleMoves : PossibleMoves;
-   begin
+      inTurn : GameTurn.Turn := aTurn;
+   begin        
       if( aTurn = GameTurn.Player ) then
          aColor := ModelLayer.Black;
          row := 2;
@@ -1310,24 +1356,25 @@ package body ControllerLayer is
          aColor := ModelLayer.White;
          row := 1;
       end if;
-      for col in aAllData.aChessBoard.aAliveFigures.First(2) .. aAllData.aChessBoard.aAliveFigures.Last(2) loop
-         if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aType = ModelLayer.King ) then
-            aKingPosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition;
-         end if;
-      end loop;
       aNewPossibleMoves := aKingsPossibleMoves;
-      for I in aNewPossibleMoves.First .. aNewPossibleMoves.Last loop
-         if( isKingInDanger( tmp_AllData  => aAllData,
-                            aColor       => aColor,
-                            kingPosition => aNewPossibleMoves.aDynamicTable( I ) ) = False ) then
-            aNewPossibleMoves := removePossibleMoves( outterPossibleMoves => aNewPossibleMoves,
-                                                        aPosition           => aNewPossibleMoves.aDynamicTable( I ) );
-            Put_Line("!!! false2 !!!");
-         else
-            Put_Line("true2");
-         end if;
-      end loop;
-      
+      if( isPossibleMovesEmpty( outterPossibleMoves => aNewPossibleMoves ) = False ) then
+         for I in aNewPossibleMoves.First .. aNewPossibleMoves.Last loop
+            Put_Line( "#1 Last = " & aKingsPossibleMoves.Last'Img & " vs. I = " & I'Img );
+            Put_Line( "#2 Last = " & aNewPossibleMoves.Last'Img & " vs. I = " & I'Img );
+            if( isKingInDanger( tmp_AllData  => aAllData,
+                               aColor       => aColor,
+                               kingPosition => aNewPossibleMoves.aDynamicTable( I ) ) = False ) then
+               aNewPossibleMoves := removePossibleMoves( outterPossibleMoves => aNewPossibleMoves,
+                                                         aPosition           => aNewPossibleMoves.aDynamicTable( I ) );
+               Put_Line("!!! false2 !!!");
+            else
+               Put_Line("true2");
+            end if;
+         end loop;
+      else
+         null; -- do nothing
+      end if;
+      aKingsPossibleMoves := aNewPossibleMoves;
       return aNewPossibleMoves;
       
    end FindPossibleMovesKingWithoutCheck;
