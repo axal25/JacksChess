@@ -39,18 +39,32 @@ package body ControllerLayer is
       aTmpFigurePosition : ModelLayer.Position;
       aTmpButton : Gtk.Button.Gtk_Button;
       IdPosition : Gtk.Handlers.Handler_Id;
+      aKingsPosition : ModelLayer.Position;
+      aColor : ModelLayer.Color;
    begin
       declare
          row : Integer;
       begin
          if( aTurn = GameTurn.Player ) then
             row := 1;
+            aColor := ModelLayer.White;
          else
             row := 2;
+            aColor := ModelLayer.Black;
             task_GT.Reset_PossibleActivations;
          end if;
-         for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
-            aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
+         
+         for col in aAllData.aChessBoard.aAliveFigures.First( 2 ) .. aAllData.aChessBoard.aAliveFigures.Last( 2 ) loop
+            if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aType = ModelLayer.King ) then
+               aKingsPosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition;
+            end if;
+         end loop;
+         
+         if( isKingInDanger( tmp_AllData  => aAllData,
+                            aColor       => aColor,
+                            kingPosition => aKingsPosition ) = True ) then
+            
+            aTmpFigurePosition := aKingsPosition;
             aTmpButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
                                                             VisualLayer.AxisX( aTmpFigurePosition.aXPosition ) ); 
             
@@ -62,7 +76,25 @@ package body ControllerLayer is
             if( aTurn = GameTurn.Computer ) then
                task_GT.Append_PossibleActivations( aTmpButton );
             end if;
-         end loop;
+            
+         else
+            
+            for col in aAliveFigures.First(2) .. aAliveFigures.Last(2) loop
+               aTmpFigurePosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition; 
+               aTmpButton := aAllData.aMainWindow.aButtonGrid( VisualLayer.AxisY( aTmpFigurePosition.aYPosition), 
+                                                               VisualLayer.AxisX( aTmpFigurePosition.aXPosition ) ); 
+            
+               IdPosition := UserCallback_Position.Connect( aTmpButton, "clicked", 
+                                                            UserCallback_Position.To_Marshaller( Activate_Button_Call'Access ),
+                                                            aTmpFigurePosition ); 
+            
+               --              Put_Line( "[" & aTmpFigurePosition.aYPosition'Img & ", " & aTmpFigurePosition.aXPosition'Img & " ] is to SetPossibleToActivate " ); 
+               if( aTurn = GameTurn.Computer ) then
+                  task_GT.Append_PossibleActivations( aTmpButton );
+               end if;
+               
+            end loop;
+         end if;
          
          if( aTurn = GameTurn.Computer ) then
             while( isPossibleMovesEmpty( aPossibleMoves ) ) loop
