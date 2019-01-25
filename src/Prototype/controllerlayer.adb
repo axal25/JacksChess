@@ -199,8 +199,8 @@ package body ControllerLayer is
    end SetActive_aActivatedPosition;
    
    procedure FindPossibleMoves( aPosition : in ModelLayer.Position ) is
-      aColor : ModelLayer.Color;
-      aFigureType : ModelLayer.FigureType;
+      aColor : ModelLayer.Color := White;
+      --  aFigureType : ModelLayer.FigureType;
       isTaken : Boolean := aAllData.aChessBoard.aGrid( aPosition.aYPosition, aPosition.aXPosition ).isTaken;
       tmpPosition : ModelLayer.Position := aPosition;
       row : ModelLayer.AxisY := aPosition.aYPosition;
@@ -732,19 +732,19 @@ package body ControllerLayer is
       --   Put_Line( ">>DANGER" & String(PossibleMovesToString(outterPossibleMoves => aKingDangerSquares)));
       --end if;
       czyJestSzach := isKingInDanger(tmp_AllData  => tmp_AllData,
-                     aColor       => aColor,
+                                     aColor       => aColor,
                                      kingPosition => tmpPosition);
       if(czyJestSzach = True) then
-      Put_Line( ">>JEST SZACH");
+         Put_Line( ">>JEST SZACH");
       else
-      Put_Line( ">>NIE MA SZACHA");
+         Put_Line( ">>NIE MA SZACHA");
       end if;
       
       return tmpPossibleMoves;
    end FindPossibleMovesKing;
    
    function kingDangerSquares (tmp_AllData : in  VisualLayer.AllData; aColor :in  ModelLayer.Color) return PossibleMoves is
-      bColor :  ModelLayer.Color;
+      enemyColor :  ModelLayer.Color;
       kingDangerSquares : PossibleMoves;
       tmpPossibleMoves : PossibleMoves;
       kingPosition : ModelLayer.Position;
@@ -752,8 +752,11 @@ package body ControllerLayer is
       copy_AllData : VisualLayer.AllData := tmp_AllData;
       copy_AliveFigures : ModelLayer.AliveFigures := copy_AllData.aChessBoard.aAliveFigures;   
       row : Integer;
-      iter : Integer;
-      
+      --  iter : Integer;
+      tmp_row_pawn : ModelLayer.AxisY;
+      tmp_col_pawn : ModelLayer.AxisX;
+      tmp_row : ModelLayer.AxisY;
+      tmp_col : ModelLayer.AxisX;
    begin
       if(aColor=White) then
          row:=1;
@@ -772,20 +775,50 @@ package body ControllerLayer is
       
       if(aColor=White) then
          row:=2;
-         bColor := Black;
+         enemyColor := Black;
       else
          row:=1;
-         bColor := White;
+         enemyColor := White;
       end if;
       copy_AllData.aChessBoard.aGrid( kingPosition.aYPosition, kingPosition.aXPosition ).isTaken := False;
       for col in copy_AliveFigures.First(2) .. copy_AliveFigures.Last(2) loop
                   
          if(copy_AliveFigures.aDynamicTable( row, col ).isAlive = True)  then
-            tmpPosition := copy_AliveFigures.aDynamicTable( row, col ).aPosition; 
-            tmpPossibleMoves:= FindMoves(tmp_AllData => copy_AllData,
-                                         aPosition   => tmpPosition,
-                                         aColor      => bColor);
+            if(copy_AliveFigures.aDynamicTable( row, col ).aType = Pawn) then
+               Put_Line( ">>>>>>> ZNALAZLEM PAWN" );
+               
+               tmp_row_pawn :=copy_AliveFigures.aDynamicTable( row, col ).aPosition.aYPosition;
+               tmp_col_pawn :=copy_AliveFigures.aDynamicTable( row, col ).aPosition.aXPosition;
+               Put_Line( ">>>>>>>>>>>>>> ZNALAZLEM PAWN [" & tmp_row_pawn'Img & ", " & tmp_col_pawn'Img & " ] ");
+               
+               if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )>1) then 
+                  tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )-1) ;
+                  tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
+                                                          aY                  => tmp_row_pawn,
+                                                          ax                  => tmp_col);
+               end if;
             
+               if( ModelLayer.AxisX_to_Integer( tmp_col_pawn )<8) then
+                  tmp_col := ModelLayer.Integer_to_AxisX( ModelLayer.AxisX_to_Integer( tmp_col_pawn )+1) ;
+                  tmpPossibleMoves := appendPossibleMoves(outterPossibleMoves => tmpPossibleMoves,
+                                                          aY                  => tmp_row_pawn,
+                                                          ax                  => tmp_col);
+               end if; 
+               
+               
+               if(isPossibleMovesEmpty(kingDangerSquares) = True) then
+                  kingDangerSquares := tmpPossibleMoves;
+               
+               end if;
+               if(isPossibleMovesEmpty(tmpPossibleMoves) = False) then
+                  kingDangerSquares := concatenatePossibleMoves(kingDangerSquares,tmpPossibleMoves);
+               end if;
+            else      
+               tmpPosition := copy_AliveFigures.aDynamicTable( row, col ).aPosition; 
+               tmpPossibleMoves:= FindMoves(tmp_AllData => copy_AllData,
+                                            aPosition   => tmpPosition,
+                                            aColor      => enemyColor);   
+            end if;
             if(isPossibleMovesEmpty(kingDangerSquares) = True) then
                kingDangerSquares := tmpPossibleMoves;
                
@@ -922,7 +955,7 @@ package body ControllerLayer is
       newPosition.aYPosition := aY;
       newPosition.aXPosition := aX;
       outterPossibleMoves := appendPossibleMoves( outterPossibleMoves, newPosition );
-      Put_Line( "append( ..., aY, aX) => " & PossibleMovesToString( aPossibleMoves ) );
+      --Put_Line( "append( ..., aY, aX) => " & PossibleMovesToString( aPossibleMoves ) );
       return outterPossibleMoves;
    end appendPossibleMoves;
    
