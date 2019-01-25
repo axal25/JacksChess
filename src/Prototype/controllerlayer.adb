@@ -1272,6 +1272,9 @@ package body ControllerLayer is
       for col in aAllData.aChessBoard.aAliveFigures.First(2) .. aAllData.aChessBoard.aAliveFigures.Last(2) loop
          if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aType = ModelLayer.King ) then
             aKingPosition := aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).aPosition;
+            if( aAllData.aChessBoard.aAliveFigures.aDynamicTable( row, col ).isAlive = False ) then
+               return True;
+            end if;
          end if;
       end loop;
       aKingsPossibleMoves := FindPossibleMovesKing( tmp_AllData     => aAllData,
